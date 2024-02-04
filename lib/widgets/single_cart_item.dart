@@ -101,7 +101,7 @@ class _SingleCartItemState extends State<SingleCartItem> {
                         widget.productCategory,
                       ),
                       Text(
-                        "\INR ${widget.productPrice.toInt() * widget.productQuantity.toInt()}",
+                        "₹ ${widget.productPrice.toInt() * widget.productQuantity.toInt()}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -112,12 +112,14 @@ class _SingleCartItemState extends State<SingleCartItem> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IncrementAndDecrement(
-                            icon: Icons.add,
+                            icon: Icons.remove,
                             onPressed: () {
-                              setState(() {
-                                quantity++;
-                                quantityFuntion();
-                              });
+                              if (quantity > 1) {
+                                setState(() {
+                                  quantity--;
+                                  quantityFuntion();
+                                });
+                              }
                             },
                           ),
                           Text(
@@ -127,14 +129,12 @@ class _SingleCartItemState extends State<SingleCartItem> {
                             ),
                           ),
                           IncrementAndDecrement(
-                            icon: Icons.remove,
+                            icon: Icons.add,
                             onPressed: () {
-                              if (quantity > 1) {
-                                setState(() {
-                                  quantity--;
-                                  quantityFuntion();
-                                });
-                              }
+                              setState(() {
+                                quantity++;
+                                quantityFuntion();
+                              });
                             },
                           ),
                         ],

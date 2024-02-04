@@ -66,8 +66,8 @@ class _SingleProductState extends State<SingleProduct> {
           Container(
             margin: const EdgeInsets.all(12.0),
             alignment: Alignment.topRight,
-            height: 200,
-            width: 200,
+            height: 150,
+            width: 150,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
@@ -113,8 +113,7 @@ class _SingleProductState extends State<SingleProduct> {
               Text(
                 widget.productName,
                 style: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
+                    fontWeight: FontWeight.normal, fontSize: 16),
               ),
               const SizedBox(
                 width: 20,

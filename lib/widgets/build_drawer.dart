@@ -71,10 +71,11 @@ class BuildDrawer extends StatelessWidget {
           ListTile(
             onTap: () {
               FirebaseAuth.instance.signOut().then(
-                    (value) => Navigator.of(context).push(
+                    (value) => Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const LoginPage(),
                       ),
+                      (route) => false,
                     ),
                   );
             },

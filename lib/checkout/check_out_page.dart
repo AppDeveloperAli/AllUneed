@@ -8,7 +8,8 @@ import '../appColors/app_colors.dart';
 import '../widgets/single_cart_item.dart';
 
 class CheckOutPage extends StatefulWidget {
-  const CheckOutPage({Key? key}) : super(key: key);
+  String? time;
+  CheckOutPage({Key? key, required this.time}) : super(key: key);
 
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
@@ -131,8 +132,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
               child: Column(
                 children: [
                   ListTile(
+                    leading: const Text("Picked Time"),
+                    trailing: Text(widget.time.toString()),
+                  ),
+                  ListTile(
                     leading: const Text("Sub Total"),
-                    trailing: Text("${subTotal.toStringAsFixed(2)} INR"),
+                    trailing: Text("₹ ${subTotal.toStringAsFixed(2)}"),
                   ),
                   const ListTile(
                     leading: Text("Discount"),
@@ -140,14 +145,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   ),
                   const ListTile(
                     leading: Text("Shiping"),
-                    trailing: Text("10 INR"),
+                    trailing: Text("₹ 10"),
                   ),
                   const Divider(
                     thickness: 2,
                   ),
                   ListTile(
                     leading: const Text("Total"),
-                    trailing: Text("${totalPrice.toStringAsFixed(2)} INR"),
+                    trailing: Text("₹ ${totalPrice.toStringAsFixed(2)}"),
                   ),
                   cartProvider.getCartList.isEmpty
                       ? const Text("")

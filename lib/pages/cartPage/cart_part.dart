@@ -114,9 +114,38 @@ class _CartPageState extends State<CartPage> {
           : MyButton(
               text: "Check Out",
               onPressed: () {
+                var snackBar = '';
+                switch (selectedPayment) {
+                  case 0:
+                    snackBar = '5:30';
+                    break;
+                  case 1:
+                    snackBar = '6:30';
+                    break;
+                  case 2:
+                    snackBar = '7:30';
+                    break;
+                  case 3:
+                    snackBar = '8:30';
+                    break;
+                  case 4:
+                    snackBar = '9:30';
+                    break;
+                  case 5:
+                    snackBar = '10:30';
+                    break;
+                }
+                final snackBarMsg = SnackBar(
+                  content: Text('You select Time Slot : "$snackBar"'),
+                );
+
+                ScaffoldMessenger.of(context).showSnackBar(snackBarMsg);
+
                 RoutingPage.goTonext(
                   context: context,
-                  navigateTo: const CheckOutPage(),
+                  navigateTo: CheckOutPage(
+                    time: snackBar,
+                  ),
                 );
               },
             ),
@@ -180,59 +209,58 @@ class _CartPageState extends State<CartPage> {
                             CustomPaymentCardButton('8 : 30', 3),
                             CustomPaymentCardButton('9 : 30', 4),
                             CustomPaymentCardButton('10 : 30', 5),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            shape: MaterialStateProperty.all<
-                                                    RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            18.0),
-                                                    side: const BorderSide(
-                                                        color: Colors.blue)))),
-                                        onPressed: () {
-                                          var snackBar = '';
-                                          switch (selectedPayment) {
-                                            case 0:
-                                              snackBar = '5:30';
-                                              break;
-                                            case 1:
-                                              snackBar = '6:30';
-                                              break;
-                                            case 2:
-                                              snackBar = '7:30';
-                                              break;
-                                            case 3:
-                                              snackBar = '8:30';
-                                              break;
-                                            case 4:
-                                              snackBar = '9:30';
-                                              break;
-                                            case 5:
-                                              snackBar = '10:30';
-                                              break;
-                                          }
-                                          final snackBarMsg = SnackBar(
-                                            content: Text(
-                                                'You select Time Slot : "$snackBar"'),
-                                          );
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBarMsg);
-                                        },
-                                        child: Text("SUBMIT".toUpperCase(),
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blue))),
-                                  ),
-                                ],
-                              ),
-                            )
+                            // Padding(
+                            //   padding: const EdgeInsets.only(top: 10),
+                            //   child: Row(
+                            //     children: [
+                            //       Expanded(
+                            //         child: ElevatedButton(
+                            //             style: ButtonStyle(
+                            //                 shape: MaterialStateProperty.all<
+                            //                         RoundedRectangleBorder>(
+                            //                     RoundedRectangleBorder(
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(
+                            //                                 18.0),
+                            //                         side: const BorderSide(
+                            //                             color: Colors.blue)))),
+                            //             onPressed: () {
+                            //               var snackBar = '';
+                            //               switch (selectedPayment) {
+                            //                 case 0:
+                            //                   snackBar = '5:30';
+                            //                   break;
+                            //                 case 1:
+                            //                   snackBar = '6:30';
+                            //                   break;
+                            //                 case 2:
+                            //                   snackBar = '7:30';
+                            //                   break;
+                            //                 case 3:
+                            //                   snackBar = '8:30';
+                            //                   break;
+                            //                 case 4:
+                            //                   snackBar = '9:30';
+                            //                   break;
+                            //                 case 5:
+                            //                   snackBar = '10:30';
+                            //                   break;
+                            //               }
+                            //               final snackBarMsg = SnackBar(
+                            //                 content: Text(
+                            //                     'You select Time Slot : "$snackBar"'),
+                            //               );
+                            //               ScaffoldMessenger.of(context)
+                            //                   .showSnackBar(snackBarMsg);
+                            //             },
+                            //             child: Text("SUBMIT".toUpperCase(),
+                            //                 style: const TextStyle(
+                            //                     fontSize: 14,
+                            //                     color: Colors.blue))),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // )
                           ],
                         ),
                       ),

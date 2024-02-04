@@ -7,6 +7,7 @@ class CenterPart extends StatelessWidget {
   final bool obscureText;
   final Widget icon;
   final void Function()? onPressed;
+
   const CenterPart({
     required this.obscureText,
     required this.icon,
@@ -15,7 +16,6 @@ class CenterPart extends StatelessWidget {
     Key? key,
     this.onPressed,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,6 +25,7 @@ class CenterPart extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10),
           child: TextFormField(
             controller: password,
+            obscureText: obscureText,
             decoration: InputDecoration(
               hintText: "Password",
               suffixIcon: IconButton(

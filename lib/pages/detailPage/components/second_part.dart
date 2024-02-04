@@ -93,16 +93,16 @@ class SecondPart extends StatelessWidget {
               ),
             ],
           ),
-          const Text(
-            "Description",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            productDescription,
-            style: const TextStyle(),
-          ),
+          // const Text(
+          //   "Description",
+          //   style: TextStyle(
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
+          // Text(
+          //   productDescription,
+          //   style: const TextStyle(),
+          // ),
           MyButton(
             onPressed: () {
               FirebaseFirestore.instance

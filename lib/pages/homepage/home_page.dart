@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildProduct(
       {required Stream<QuerySnapshot<Map<String, dynamic>>>? stream}) {
     return SizedBox(
-      height: size!.height / 3 + 0,
+      height: size!.height / 4 + 0,
       child: StreamBuilder(
         stream: stream,
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
@@ -197,20 +197,6 @@ class _HomePageState extends State<HomePage> {
                     buildCategory(),
                     const ListTile(
                       leading: Text(
-                        "Products",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                    buildProduct(
-                      stream: FirebaseFirestore.instance
-                          .collection("products")
-                          .snapshots(),
-                    ),
-                    const ListTile(
-                      leading: Text(
                         "Best Sell",
                         style: TextStyle(
                           fontSize: 20,
@@ -226,6 +212,20 @@ class _HomePageState extends State<HomePage> {
                             "productRate",
                             descending: true,
                           )
+                          .snapshots(),
+                    ),
+                    const ListTile(
+                      leading: Text(
+                        "Products",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    buildProduct(
+                      stream: FirebaseFirestore.instance
+                          .collection("products")
                           .snapshots(),
                     ),
                   ],

@@ -18,6 +18,9 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController location = TextEditingController();
 
   TextEditingController password = TextEditingController();
+
+  bool isObsecure = true;
+
   @override
   Widget build(BuildContext context) {
     SignupAuthProvider signupAuthProvider =
@@ -70,11 +73,23 @@ class _SignupPageState extends State<SignupPage> {
                     padding: const EdgeInsets.only(top: 10),
                     child: TextFormField(
                       controller: password,
-                      obscureText: true,
+                      obscureText: isObsecure,
                       decoration: InputDecoration(
                         hintText: "Password",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isObsecure = !isObsecure; // Toggle the value
+                            });
+                          },
+                          icon: Icon(
+                            isObsecure
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
                         ),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey[800]),
