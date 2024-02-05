@@ -10,9 +10,9 @@ import '../../../route/routing_page.dart';
 class SecondPart extends StatelessWidget {
   final String productName;
   final double productPrice;
-  final double productOldPrice;
+  // final double productOldPrice;
   final int productRate;
-  final String productDescription;
+  // final String productDescription;
   final String productId;
   final String productImage;
   final String productCategory;
@@ -21,10 +21,10 @@ class SecondPart extends StatelessWidget {
     required this.productCategory,
     required this.productImage,
     required this.productId,
-    required this.productDescription,
+    // required this.productDescription,
     required this.productName,
     required this.productPrice,
-    required this.productOldPrice,
+    // required this.productOldPrice,
     required this.productRate,
   }) : super(key: key);
 
@@ -48,51 +48,51 @@ class SecondPart extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              Text(
-                "INR $productOldPrice",
-                style: const TextStyle(
-                  decoration: TextDecoration.lineThrough,
-                ),
-              ),
+              // Text(
+              //   "INR $productOldPrice",
+              //   style: const TextStyle(
+              //     decoration: TextDecoration.lineThrough,
+              //   ),
+              // ),
             ],
           ),
-          Column(
-            children: [
-              const Divider(
-                thickness: 2,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.Kgradient1,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Center(
-                      child: Text(
-                        productRate.toString(),
-                        style: const TextStyle(
-                          color: AppColors.KwhiteColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    "50 Reviews",
-                    style: TextStyle(
-                      color: AppColors.Kgradient1,
-                    ),
-                  )
-                ],
-              ),
-              const Divider(
-                thickness: 2,
-              ),
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     const Divider(
+          //       thickness: 2,
+          //     ),
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Container(
+          //           height: 40,
+          //           width: 40,
+          //           decoration: BoxDecoration(
+          //             color: AppColors.Kgradient1,
+          //             borderRadius: BorderRadius.circular(6),
+          //           ),
+          //           child: Center(
+          //             child: Text(
+          //               productRate.toString(),
+          //               style: const TextStyle(
+          //                 color: AppColors.KwhiteColor,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //         const Text(
+          //           "50 Reviews",
+          //           style: TextStyle(
+          //             color: AppColors.Kgradient1,
+          //           ),
+          //         )
+          //       ],
+          //     ),
+          //     const Divider(
+          //       thickness: 2,
+          //     ),
+          //   ],
+          // ),
           // const Text(
           //   "Description",
           //   style: TextStyle(
@@ -103,33 +103,6 @@ class SecondPart extends StatelessWidget {
           //   productDescription,
           //   style: const TextStyle(),
           // ),
-          MyButton(
-            onPressed: () {
-              FirebaseFirestore.instance
-                  .collection("cart")
-                  .doc(FirebaseAuth.instance.currentUser?.uid)
-                  .collection("userCart")
-                  .doc(productId)
-                  .set(
-                {
-                  "productId": productId,
-                  "productImage": productImage,
-                  "productName": productName,
-                  "productPrice": productPrice,
-                  "productOldPrice": productPrice,
-                  "productRate": productRate,
-                  "productDescription": productDescription,
-                  "productQuantity": 1,
-                  "productCategory": productCategory,
-                },
-              );
-              RoutingPage.goTonext(
-                context: context,
-                navigateTo: const CartPage(),
-              );
-            },
-            text: "Add to Cart",
-          ),
         ],
       ),
     );

@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fiv/pages/cartPage/cart_part.dart';
+import 'package:fiv/route/routing_page.dart';
+import 'package:fiv/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
 import '../welcome/components/top_part.dart';
@@ -9,19 +14,19 @@ class DetailsPage extends StatelessWidget {
   final String productCategory;
   final double productPrice;
   final String productId;
-  final double productOldPrice;
+  // final double productOldPrice;
   final int productRate;
-  final String productDescription;
+  // final String productDescription;
 
   const DetailsPage({
     Key? key,
     required this.productCategory,
     required this.productId,
-    required this.productDescription,
+    // required this.productDescription,
     required this.productName,
     required this.productImage,
     required this.productPrice,
-    required this.productOldPrice,
+    // required this.productOldPrice,
     required this.productRate,
   }) : super(key: key);
   @override
@@ -41,11 +46,41 @@ class DetailsPage extends StatelessWidget {
               productCategory: productCategory,
               productImage: productImage,
               productId: productId,
-              productDescription: productDescription,
+              // productDescription: productDescription,
               productName: productName,
-              productOldPrice: productOldPrice,
+              // productOldPrice: productOldPrice,
               productPrice: productPrice,
               productRate: productRate,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: MyButton(
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection("cart")
+                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                      .collection("userCart")
+                      .doc(productId)
+                      .set(
+                    {
+                      "productId": productId,
+                      "productImage": productImage,
+                      "productName": productName,
+                      "productPrice": productPrice,
+                      "productOldPrice": productPrice,
+                      "productRate": productRate,
+                      // "productDescription": productDescription,
+                      "productQuantity": 1,
+                      "productCategory": productCategory,
+                    },
+                  );
+                  RoutingPage.goTonext(
+                    context: context,
+                    navigateTo: const CartPage(),
+                  );
+                },
+                text: "Add to Cart",
+              ),
             ),
           ],
         ),

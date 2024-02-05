@@ -74,14 +74,14 @@ class _CartPageState extends State<CartPage> {
           Center(
             child: isAtLeastFiveHoursLater
                 ? Text(
-                    title,
+                    '$title PM',
                     style: TextStyle(
                         color: (selectedPayment == index)
                             ? Colors.green
                             : Colors.black),
                   )
                 : Text(
-                    title,
+                    '$title PM',
                     style: TextStyle(
                         color: (selectedPayment == index)
                             ? Colors.green

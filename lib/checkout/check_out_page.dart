@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fiv/pages/detailPage/details_page.dart';
 import 'package:fiv/provider/cart_provider.dart';
+import 'package:fiv/route/routing_page.dart';
 import 'package:fiv/widgets/my_button.dart';
+import 'package:fiv/widgets/single_product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -102,10 +106,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: cartProvider.getCartList.isEmpty
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            cartProvider.getCartList.isEmpty
                 ? const Center(
                     child: Text("No Product"),
                   )
@@ -125,15 +129,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       );
                     },
                   ),
-          ),
-          Expanded(
-            child: Padding(
+            Padding(
               padding: const EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 children: [
                   ListTile(
                     leading: const Text("Picked Time"),
-                    trailing: Text(widget.time.toString()),
+                    trailing: Text('${widget.time.toString()} PM'),
                   ),
                   ListTile(
                     leading: const Text("Sub Total"),
@@ -154,6 +156,28 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     leading: const Text("Total"),
                     trailing: Text("₹ ${totalPrice.toStringAsFixed(2)}"),
                   ),
+                  const Divider(
+                    thickness: 2,
+                  ),
+                  const ListTile(
+                    leading: Text(
+                      "Best Sell",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  buildProduct(
+                    stream: FirebaseFirestore.instance
+                        .collection("products")
+                        .where("productRate", isGreaterThan: 4)
+                        .orderBy(
+                          "productRate",
+                          descending: true,
+                        )
+                        .snapshots(),
+                  ),
                   cartProvider.getCartList.isEmpty
                       ? const Text("")
                       : MyButton(
@@ -163,8 +187,69 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 ],
               ),
             ),
-          )
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  String query = "";
+  var result;
+  searchFunction(query, searchList) {
+    result = searchList.where((element) {
+      return element["productName"].toUpperCase().contains(query) ||
+          element["productName"].toLowerCase().contains(query) ||
+          element["productName"].toUpperCase().contains(query) &&
+              element["productName"].toLowerCase().contains(query);
+    }).toList();
+    return result;
+  }
+
+  Widget buildProduct(
+      {required Stream<QuerySnapshot<Map<String, dynamic>>>? stream}) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 4 + 0,
+      child: StreamBuilder(
+        stream: stream,
+        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+          if (!streamSnapshort.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: streamSnapshort.data!.docs.length,
+            itemBuilder: (ctx, index) {
+              var varData = searchFunction(query, streamSnapshort.data!.docs);
+              var data = varData[index];
+              // var data = streamSnapshort.data!.docs[index];
+              return SingleProduct(
+                onTap: () {
+                  RoutingPage.goTonext(
+                    context: context,
+                    navigateTo: DetailsPage(
+                      productCategory: data["productCategory"],
+                      productId: data["productId"],
+                      productImage: data["productImage"],
+                      productName: data["productName"],
+                      // productOldPrice: data["productOldPrice"],
+                      productPrice: data["productPrice"],
+                      productRate: data["productRate"],
+                      // productDescription: data["productDescription"],
+                    ),
+                  );
+                },
+                productId: data["productId"],
+                productCategory: data["productCategory"],
+                productRate: data["productRate"],
+                // productOldPrice: data["productOldPrice"],
+                productPrice: data["productPrice"],
+                productImage: data["productImage"],
+                productName: data["productName"],
+              );
+            },
+          );
+        },
       ),
     );
   }

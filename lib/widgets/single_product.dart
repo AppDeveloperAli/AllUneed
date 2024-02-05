@@ -11,7 +11,7 @@ class SingleProduct extends StatefulWidget {
   final productId;
   final productCategory;
   final productRate;
-  final productOldPrice;
+  // final productOldPrice;
   final productPrice;
   final productImage;
   final productName;
@@ -22,7 +22,7 @@ class SingleProduct extends StatefulWidget {
     required this.productId,
     required this.productCategory,
     required this.productRate,
-    required this.productOldPrice,
+    // required this.productOldPrice,
     required this.productPrice,
     required this.productImage,
     required this.productName,
@@ -88,7 +88,7 @@ class _SingleProductState extends State<SingleProduct> {
                         productId: widget.productId,
                         productCategory: widget.productCategory,
                         productRate: widget.productRate,
-                        productOldPrice: widget.productOldPrice,
+                        // productOldPrice: widget.productOldPrice,
                         productPrice: widget.productPrice,
                         productImage: widget.productImage,
                         productFavorite: true,
