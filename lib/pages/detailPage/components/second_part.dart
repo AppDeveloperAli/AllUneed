@@ -30,81 +30,79 @@ class SecondPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            productName,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          productName,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Row(
+          children: [
+            Text("INR $productPrice"),
+            const SizedBox(
+              width: 20,
             ),
-          ),
-          Row(
-            children: [
-              Text("INR $productPrice"),
-              const SizedBox(
-                width: 20,
-              ),
-              // Text(
-              //   "INR $productOldPrice",
-              //   style: const TextStyle(
-              //     decoration: TextDecoration.lineThrough,
-              //   ),
-              // ),
-            ],
-          ),
-          // Column(
-          //   children: [
-          //     const Divider(
-          //       thickness: 2,
-          //     ),
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         Container(
-          //           height: 40,
-          //           width: 40,
-          //           decoration: BoxDecoration(
-          //             color: AppColors.Kgradient1,
-          //             borderRadius: BorderRadius.circular(6),
-          //           ),
-          //           child: Center(
-          //             child: Text(
-          //               productRate.toString(),
-          //               style: const TextStyle(
-          //                 color: AppColors.KwhiteColor,
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //         const Text(
-          //           "50 Reviews",
-          //           style: TextStyle(
-          //             color: AppColors.Kgradient1,
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //     const Divider(
-          //       thickness: 2,
-          //     ),
-          //   ],
-          // ),
-          // const Text(
-          //   "Description",
-          //   style: TextStyle(
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
-          // Text(
-          //   productDescription,
-          //   style: const TextStyle(),
-          // ),
-        ],
-      ),
+            // Text(
+            //   "INR $productOldPrice",
+            //   style: const TextStyle(
+            //     decoration: TextDecoration.lineThrough,
+            //   ),
+            // ),
+          ],
+        ),
+        // Column(
+        //   children: [
+        //     const Divider(
+        //       thickness: 2,
+        //     ),
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       children: [
+        //         Container(
+        //           height: 40,
+        //           width: 40,
+        //           decoration: BoxDecoration(
+        //             color: AppColors.Kgradient1,
+        //             borderRadius: BorderRadius.circular(6),
+        //           ),
+        //           child: Center(
+        //             child: Text(
+        //               productRate.toString(),
+        //               style: const TextStyle(
+        //                 color: AppColors.KwhiteColor,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //         const Text(
+        //           "50 Reviews",
+        //           style: TextStyle(
+        //             color: AppColors.Kgradient1,
+        //           ),
+        //         )
+        //       ],
+        //     ),
+        //     const Divider(
+        //       thickness: 2,
+        //     ),
+        //   ],
+        // ),
+        // const Text(
+        //   "Description",
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        // Text(
+        //   productDescription,
+        //   style: const TextStyle(),
+        // ),
+      ],
     );
   }
 }
