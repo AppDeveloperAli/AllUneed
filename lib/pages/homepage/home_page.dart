@@ -313,9 +313,13 @@ class Categories extends StatelessWidget {
         child: Stack(
           children: [
             // Background Image
-            Image.network(
-              image,
-              fit: BoxFit.cover,
+            SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Image.network(
+                image,
+                fit: BoxFit.cover,
+              ),
             ),
 
             // Blurred Overlay
