@@ -107,24 +107,27 @@ class _SingleProductState extends State<SingleProduct> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                widget.productName,
-                style: const TextStyle(
-                    fontWeight: FontWeight.normal, fontSize: 16),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Text(
-                "\Rs ${widget.productPrice}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  widget.productName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.normal, fontSize: 16),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  "\Rs ${widget.productPrice}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),

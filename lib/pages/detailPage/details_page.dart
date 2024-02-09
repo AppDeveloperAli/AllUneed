@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fiv/pages/cartPage/cart_part.dart';
@@ -114,12 +112,13 @@ class _DetailsPageState extends State<DetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TopPart(),
+              const TopPart(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 250,
+                    width: 250,
                     child: Card(
                       semanticContainer: true,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -131,7 +130,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       elevation: 5,
-                      margin: EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
                     ),
                   ),
                 ],
@@ -145,25 +144,6 @@ class _DetailsPageState extends State<DetailsPage> {
                 // productOldPrice: productOldPrice,
                 productPrice: widget.productPrice,
                 productRate: widget.productRate,
-              ),
-              const ListTile(
-                leading: Text(
-                  "Best Sell",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
-              buildProduct(
-                stream: FirebaseFirestore.instance
-                    .collection("products")
-                    .where("productRate", isGreaterThan: 4)
-                    .orderBy(
-                      "productRate",
-                      descending: true,
-                    )
-                    .snapshots(),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, top: 20),
@@ -193,6 +173,28 @@ class _DetailsPageState extends State<DetailsPage> {
                     );
                   },
                   text: "Add to Cart",
+                ),
+              ),
+              const ListTile(
+                leading: Text(
+                  "Best Sell",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: buildProduct(
+                  stream: FirebaseFirestore.instance
+                      .collection("products")
+                      .where("productRate", isGreaterThan: 4)
+                      .orderBy(
+                        "productRate",
+                        descending: true,
+                      )
+                      .snapshots(),
                 ),
               ),
             ],

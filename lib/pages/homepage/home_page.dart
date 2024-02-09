@@ -223,10 +223,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    buildProduct(
-                      stream: FirebaseFirestore.instance
-                          .collection("products")
-                          .snapshots(),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: buildProduct(
+                        stream: FirebaseFirestore.instance
+                            .collection("products")
+                            .snapshots(),
+                      ),
                     ),
                   ],
                 )
