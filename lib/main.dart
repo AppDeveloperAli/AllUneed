@@ -6,6 +6,7 @@ import 'package:fiv/pages/singup/component/signup_provider.dart';
 import 'package:fiv/pages/welcome/welcome_page.dart';
 import 'package:fiv/provider/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/homepage/home_page.dart';
@@ -19,6 +20,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterNativeSplash.remove();
+
   runApp(const MyApp());
 }
 

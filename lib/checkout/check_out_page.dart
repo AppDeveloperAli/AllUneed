@@ -6,7 +6,7 @@ import 'package:fiv/widgets/my_button.dart';
 import 'package:fiv/widgets/single_product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+// import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../appColors/app_colors.dart';
 import '../widgets/single_cart_item.dart';
@@ -20,22 +20,22 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
-  late Razorpay _razorpay;
+  // late Razorpay _razorpay;
   late double totalPrice;
 
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    // _razorpay = Razorpay();
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _razorpay.clear();
+    // _razorpay.clear();
   }
 
   void openCheckout() async {
@@ -54,23 +54,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
     };
 
     try {
-      _razorpay.open(options);
+      // _razorpay.open(options);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("Payment Susccess");
-  }
+  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  //   print("Payment Susccess");
+  // }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    print("Payment error");
-  }
+  // void _handlePaymentError(PaymentFailureResponse response) {
+  //   print("Payment error");
+  // }
 
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    print("EXTERNAL_WALLET ");
-  }
+  // void _handleExternalWallet(ExternalWalletResponse response) {
+  //   print("EXTERNAL_WALLET ");
+  // }
 
   @override
   Widget build(BuildContext context) {

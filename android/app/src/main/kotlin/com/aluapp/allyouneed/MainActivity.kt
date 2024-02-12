@@ -1,4 +1,4 @@
-package com.example.fiv
+package com.aluapp.allyouneed
 
 import io.flutter.embedding.android.FlutterActivity
 

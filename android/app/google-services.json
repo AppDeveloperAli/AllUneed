@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:81200823843:android:aa34b20d4a9a0d83ccbb96",
+        "android_client_info": {
+          "package_name": "com.aluapp.allyouneed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81200823843-oe6ob83oet4js32ut4ik8ha7kj2lnblc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ccSgsfpZi7FzBJzgCqowpmj8ryq-eVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81200823843-oe6ob83oet4js32ut4ik8ha7kj2lnblc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "81200823843-2f19dt9ai88nbrhg12tpfp2anjvi7qs4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:81200823843:android:3f14b975eb7c7cdfccbb96",
         "android_client_info": {
           "package_name": "com.asdasd.coa"
