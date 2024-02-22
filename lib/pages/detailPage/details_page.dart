@@ -4,6 +4,7 @@ import 'package:fiv/pages/cartPage/cart_part.dart';
 import 'package:fiv/route/routing_page.dart';
 import 'package:fiv/widgets/my_button.dart';
 import 'package:fiv/widgets/single_product.dart';
+import 'package:fiv/widgets/snackBar.dart';
 import 'package:flutter/material.dart';
 
 import '../welcome/components/top_part.dart';
@@ -13,10 +14,10 @@ class DetailsPage extends StatefulWidget {
   final String productImage;
   final String productName;
   final String productCategory;
-  final double productPrice;
+  final num productPrice;
   final String productId;
   // final double productOldPrice;
-  final int productRate;
+  final num productRate;
   // final String productDescription;
 
   const DetailsPage({
@@ -142,8 +143,8 @@ class _DetailsPageState extends State<DetailsPage> {
                 // productDescription: productDescription,
                 productName: widget.productName,
                 // productOldPrice: productOldPrice,
-                productPrice: widget.productPrice,
-                productRate: widget.productRate,
+                productPrice: widget.productPrice.toDouble(),
+                productRate: widget.productRate.toInt(),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, top: 20),
@@ -167,10 +168,12 @@ class _DetailsPageState extends State<DetailsPage> {
                         "productCategory": widget.productCategory,
                       },
                     );
-                    RoutingPage.goTonext(
-                      context: context,
-                      navigateTo: const CartPage(),
-                    );
+                    CustomSnackBar(
+                        context, const Text('Item added to Cart...'));
+                    // RoutingPage.goTonext(
+                    //   context: context,
+                    //   navigateTo: const CartPage(),
+                    // );
                   },
                   text: "Add to Cart",
                 ),

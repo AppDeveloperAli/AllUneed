@@ -1,6 +1,7 @@
 import 'package:fiv/pages/singup/signup_page.dart';
 import 'package:fiv/route/routing_page.dart';
 import 'package:fiv/widgets/my_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EndPart extends StatelessWidget {
@@ -27,7 +28,7 @@ class EndPart extends StatelessWidget {
         GestureDetector(
           onTap: () {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
+              CupertinoPageRoute(
                 builder: (context) => const SignupPage(),
               ),
             );

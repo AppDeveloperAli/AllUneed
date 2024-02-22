@@ -1,5 +1,6 @@
 import 'package:fiv/appColors/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class TopPart extends StatelessWidget {
   const TopPart({Key? key}) : super(key: key);
@@ -11,23 +12,13 @@ class TopPart extends StatelessWidget {
       children: [
         Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                "images/logo.jpg",
-                scale: 8,
-              ),
+            LottieBuilder.asset(
+              'assets/login.json',
+              height: 350,
+              repeat: true,
             ),
-            const SizedBox(
-              height: 7,
-            ),
-            const Text(
-              "Login",
-              style: TextStyle(
-                color: AppColors.KblackColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            SizedBox(
+              height: 20,
             )
           ],
         ),

@@ -6,7 +6,7 @@ class CenterPart extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
-      child: Image.asset("images/logo.jpg"),
+      child: Image.asset("images/appicon.jpg"),
     );
   }
 }

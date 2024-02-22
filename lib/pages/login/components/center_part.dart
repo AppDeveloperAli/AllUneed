@@ -20,7 +20,11 @@ class CenterPart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextFieldWidget(hintText: 'Email', controller: email!),
+        CustomTextFieldWidget(
+          hintText: 'Email',
+          controller: email!,
+          keyboardType: TextInputType.emailAddress,
+        ),
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: TextFormField(

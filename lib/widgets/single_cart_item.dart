@@ -25,17 +25,63 @@ class SingleCartItem extends StatefulWidget {
 }
 
 class _SingleCartItemState extends State<SingleCartItem> {
-  int quantity = 1;
+  int quantity = 0; // Initialize quantity with 0 initially
 
-  void quantityFuntion() {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the quantity value from Firestore and update the state variable
+    fetchQuantity();
+  }
+
+  // Function to fetch the quantity value from Firestore
+  void fetchQuantity() async {
+    try {
+      var doc = await FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("userCart")
+          .doc(widget.productId)
+          .get();
+
+      if (doc.exists) {
+        setState(() {
+          quantity = doc.data()?['productQuantity'] ?? 0;
+        });
+      }
+    } catch (e) {
+      print("Error fetching quantity: $e");
+    }
+  }
+
+  // Function to update the quantity in Firestore
+  void updateQuantity(int newQuantity) {
     FirebaseFirestore.instance
         .collection("cart")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("userCart")
         .doc(widget.productId)
         .update({
-      "productQuantity": quantity,
+      "productQuantity": newQuantity,
+    }).then((_) {
+      setState(() {
+        quantity = newQuantity;
+      });
+    }).catchError((error) {
+      print("Error updating quantity: $error");
     });
+  }
+
+  // Function to increment the quantity
+  void incrementQuantity() {
+    updateQuantity(quantity + 1);
+  }
+
+  // Function to decrement the quantity
+  void decrementQuantity() {
+    if (quantity > 0) {
+      updateQuantity(quantity - 1);
+    }
   }
 
   void deleteProductFuntion() {
@@ -113,14 +159,7 @@ class _SingleCartItemState extends State<SingleCartItem> {
                         children: [
                           IncrementAndDecrement(
                             icon: Icons.remove,
-                            onPressed: () {
-                              if (quantity > 1) {
-                                setState(() {
-                                  quantity--;
-                                  quantityFuntion();
-                                });
-                              }
-                            },
+                            onPressed: decrementQuantity,
                           ),
                           Text(
                             widget.productQuantity.toString(),
@@ -130,12 +169,7 @@ class _SingleCartItemState extends State<SingleCartItem> {
                           ),
                           IncrementAndDecrement(
                             icon: Icons.add,
-                            onPressed: () {
-                              setState(() {
-                                quantity++;
-                                quantityFuntion();
-                              });
-                            },
+                            onPressed: incrementQuantity,
                           ),
                         ],
                       )

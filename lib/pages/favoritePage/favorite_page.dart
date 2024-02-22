@@ -11,6 +11,7 @@ class FavoritePage extends StatelessWidget {
       collection: "favorite",
       subCollection: "userFavorite",
       id: FirebaseAuth.instance.currentUser!.uid,
+      title: 'Favourite',
     );
   }
 }

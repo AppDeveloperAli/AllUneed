@@ -1,11 +1,14 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fiv/model/user_model.dart';
 import 'package:fiv/widgets/single_product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../appColors/app_colors.dart';
 import '../../route/routing_page.dart';
@@ -83,14 +86,15 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (ctx, index) {
                   return Categories(
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => GridViewWidget(
-                            subCollection: streamSnapshort.data!.docs[index]
-                                ["categoryName"],
-                            collection: "categories",
-                            id: streamSnapshort.data!.docs[index].id,
-                          ),
+                      RoutingPage.goTonext(
+                        context: context,
+                        navigateTo: GridViewWidget(
+                          title: streamSnapshort.data!.docs[index]
+                              ["categoryName"],
+                          subCollection: streamSnapshort.data!.docs[index]
+                              ["categoryName"],
+                          collection: "categories",
+                          id: streamSnapshort.data!.docs[index].id,
                         ),
                       );
                     },
@@ -110,7 +114,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildProduct(
       {required Stream<QuerySnapshot<Map<String, dynamic>>>? stream}) {
     return SizedBox(
-      height: size!.height / 4 + 0,
+      height: MediaQuery.of(context).size.height / 4 + 0,
       child: StreamBuilder(
         stream: stream,
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
@@ -118,8 +122,9 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: CircularProgressIndicator());
           }
           return ListView.builder(
-            scrollDirection: Axis.horizontal,
+            // scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
             itemCount: streamSnapshort.data!.docs.length,
             itemBuilder: (ctx, index) {
               var varData = searchFunction(query, streamSnapshort.data!.docs);
@@ -165,13 +170,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        title: const Text('ANU'),
       ),
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(
+              left: 15,
+              right: 15,
+              top: 10,
+            ),
             child: Material(
-              elevation: 7,
+              elevation: 0,
               shadowColor: Colors.grey[300],
               child: TextFormField(
                 onChanged: (value) {
@@ -179,13 +189,16 @@ class _HomePageState extends State<HomePage> {
                     query = value;
                   });
                 },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
                   fillColor: AppColors.KwhiteColor,
                   hintText: "Search Your Product",
                   filled: true,
                   border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
@@ -204,16 +217,89 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    buildProduct(
-                      stream: FirebaseFirestore.instance
-                          .collection("products")
-                          .where("productRate", isGreaterThan: 4)
-                          .orderBy(
-                            "productRate",
-                            descending: true,
-                          )
-                          .snapshots(),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection("products")
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.size,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              var data = snapshot.data!.docs;
+                              return Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      RoutingPage.goTonext(
+                                        context: context,
+                                        navigateTo: DetailsPage(
+                                          productCategory: data[index]
+                                              ["productCategory"],
+                                          productId: data[index]["productId"],
+                                          productImage: data[index]
+                                              ["productImage"],
+                                          productName: data[index]
+                                              ["productName"],
+                                          // productOldPrice: data["productOldPrice"],
+                                          productPrice: data[index]
+                                              ["productPrice"],
+                                          productRate: data[index]
+                                              ["productRate"],
+                                          // productDescription:
+                                          //     data["productDescription"],
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 200,
+                                      height: 180,
+                                      child: Card(
+                                        semanticContainer: true,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        child: Image.network(
+                                          data[index]['productImage'],
+                                          fit: BoxFit.fill,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        elevation: 5,
+                                        margin: const EdgeInsets.all(10),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        data[index]['productName'],
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        data[index]['productPrice'].toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
+
                     const ListTile(
                       leading: Text(
                         "Products",
@@ -223,14 +309,96 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: buildProduct(
+                    SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                      child: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection("products")
                             .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.size,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              var data = snapshot.data!.docs;
+                              return Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      RoutingPage.goTonext(
+                                        context: context,
+                                        navigateTo: DetailsPage(
+                                          productCategory: data[index]
+                                              ["productCategory"],
+                                          productId: data[index]["productId"],
+                                          productImage: data[index]
+                                              ["productImage"],
+                                          productName: data[index]
+                                              ["productName"],
+                                          // productOldPrice: data["productOldPrice"],
+                                          productPrice: data[index]
+                                              ["productPrice"],
+                                          productRate: data[index]
+                                              ["productRate"],
+                                          // productDescription:
+                                          //     data["productDescription"],
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 200,
+                                      height: 180,
+                                      child: Card(
+                                        semanticContainer: true,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        child: Image.network(
+                                          data[index]['productImage'],
+                                          fit: BoxFit.fill,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        elevation: 5,
+                                        margin: const EdgeInsets.all(10),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        data[index]['productName'],
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        data[index]['productPrice'].toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 20),
+                    //   child: buildProduct(
+                    //     stream: FirebaseFirestore.instance
+                    //         .collection("products")
+                    //         .snapshots(),
+                    //   ),
+                    // ),
                   ],
                 )
               : StreamBuilder(
@@ -319,9 +487,16 @@ class Categories extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: Image.network(
-                image,
+              child: CachedNetworkImage(
+                imageUrl: image,
                 fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                //  Image.network(
+                //   image,
+                //   fit: BoxFit.cover,
+                // ),
               ),
             ),
 

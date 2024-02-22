@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fiv/provider/favorite_provider.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,7 +72,9 @@ class _SingleProductState extends State<SingleProduct> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(widget.productImage),
+                image: CachedNetworkImageProvider(
+                  widget.productImage,
+                ),
               ),
               borderRadius: BorderRadius.circular(20),
             ),
@@ -109,24 +112,32 @@ class _SingleProductState extends State<SingleProduct> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  widget.productName,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.normal, fontSize: 16),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  "\Rs ${widget.productPrice}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      widget.productName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal, fontSize: 16),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Rs ${widget.productPrice}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],
