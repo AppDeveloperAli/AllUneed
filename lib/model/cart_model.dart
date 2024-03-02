@@ -4,8 +4,8 @@ class CartModel {
   final String productId;
   final String productCategory;
   final String productImage;
-  final double productPrice;
-  final int productQuantity;
+  final num productPrice;
+  final num productQuantity;
   final String productName;
   CartModel({
     required this.productCategory,

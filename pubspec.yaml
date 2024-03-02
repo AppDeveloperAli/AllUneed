@@ -48,6 +48,7 @@ dependencies:
   change_app_package_name: ^1.1.0
   lottie: ^3.1.0
   cached_network_image: ^3.3.1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

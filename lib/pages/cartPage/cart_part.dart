@@ -172,8 +172,8 @@ class _CartPageState extends State<CartPage> {
                   productId: data.productId,
                   productCategory: data.productCategory,
                   productImage: data.productImage,
-                  productPrice: data.productPrice,
-                  productQuantity: data.productQuantity,
+                  productPrice: data.productPrice.toDouble(),
+                  productQuantity: data.productQuantity.toInt(),
                   productName: data.productName,
                 );
               },

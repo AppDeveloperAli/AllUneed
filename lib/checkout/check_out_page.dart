@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fiv/pages/checkout/orderPlaced.dart';
 import 'package:fiv/pages/detailPage/details_page.dart';
@@ -108,109 +110,108 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                cartProvider.getCartList.isEmpty
-                    ? const Center(
-                        child: Text("No Product"),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: cartProvider.getCartList.length,
-                        itemBuilder: (ctx, index) {
-                          var data = cartProvider.cartList[index];
-                          return SingleCartItem(
-                            productId: data.productId,
-                            productCategory: data.productCategory,
-                            productImage: data.productImage,
-                            productPrice: data.productPrice,
-                            productQuantity: data.productQuantity,
-                            productName: data.productName,
-                          );
-                        },
-                      ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Text("Picked Time"),
-                        trailing: Text('${widget.time.toString()} PM'),
-                      ),
-                      ListTile(
-                        leading: const Text("Sub Total"),
-                        trailing: Text("₹ ${subTotal.toStringAsFixed(2)}"),
-                      ),
-                      const ListTile(
-                        leading: Text("Discount"),
-                        trailing: Text("5 %"),
-                      ),
-                      const ListTile(
-                        leading: Text("Shiping"),
-                        trailing: Text("₹ 10"),
-                      ),
-                      const Divider(
-                        thickness: 2,
-                      ),
-                      ListTile(
-                        leading: const Text("Total"),
-                        trailing: Text("₹ ${totalPrice.toStringAsFixed(2)}"),
-                      ),
-                      const Divider(
-                        thickness: 2,
-                      ),
-                      // const ListTile(
-                      //   leading: Text(
-                      //     "Best Sell",
-                      //     style: TextStyle(
-                      //       fontSize: 20,
-                      //       fontWeight: FontWeight.normal,
-                      //     ),
-                      //   ),
-                      // ),
-                      // buildProduct(
-                      //   stream: FirebaseFirestore.instance
-                      //       .collection("products")
-                      //       .where("productRate", isGreaterThan: 4)
-                      //       .orderBy(
-                      //         "productRate",
-                      //         descending: true,
-                      //       )
-                      //       .snapshots(),
-                      // ),
-                    ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            cartProvider.getCartList.isEmpty
+                ? const Center(
+                    child: Text("No Product"),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: cartProvider.getCartList.length,
+                    itemBuilder: (ctx, index) {
+                      var data = cartProvider.cartList[index];
+                      return SingleCartItem(
+                        productId: data.productId,
+                        productCategory: data.productCategory,
+                        productImage: data.productImage,
+                        productPrice: data.productPrice.toDouble(),
+                        productQuantity: data.productQuantity.toInt(),
+                        productName: data.productName,
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: cartProvider.getCartList.isEmpty
-                    ? const Text("")
-                    : MyButton(
-                        // onPressed: () => openCheckout(),
-                        onPressed: () {
-                          RoutingPage.goTonext(
-                              context: context,
-                              navigateTo:
-                                  OrderPlacedScreen(orderID: '14687310'));
-                        },
-                        text: "Buy",
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Text("Picked Time"),
+                    trailing: Text('${widget.time.toString()} PM'),
+                  ),
+                  ListTile(
+                    leading: const Text("Sub Total"),
+                    trailing: Text("₹ ${subTotal.toStringAsFixed(2)}"),
+                  ),
+                  const ListTile(
+                    leading: Text("Discount"),
+                    trailing: Text("5 %"),
+                  ),
+                  const ListTile(
+                    leading: Text("Shiping"),
+                    trailing: Text("₹ 10"),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                  ),
+                  ListTile(
+                    leading: const Text("Total"),
+                    trailing: Text("₹ ${totalPrice.toStringAsFixed(2)}"),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                  ),
+                  cartProvider.getCartList.isEmpty
+                      ? const Text("")
+                      : MyButton(
+                          // onPressed: () => openCheckout(),
+                          onPressed: () {
+                            cartProvider.deleteCartCollection();
+                            RoutingPage.goTonext(
+                                context: context,
+                                navigateTo: OrderPlacedScreen(
+                                  orderID: generateRandomNumber().toString(),
+                                  deliveryPasscode:
+                                      generateRandomNumber().toString(),
+                                ));
+                          },
+                          text: "Buy",
+                        ),
+                  // const ListTile(
+                  //   leading: Text(
+                  //     "Best Sell",
+                  //     style: TextStyle(
+                  //       fontSize: 20,
+                  //       fontWeight: FontWeight.normal,
+                  //     ),
+                  //   ),
+                  // ),
+                  // buildProduct(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection("products")
+                  //       .where("productRate", isGreaterThan: 4)
+                  //       .orderBy(
+                  //         "productRate",
+                  //         descending: true,
+                  //       )
+                  //       .snapshots(),
+                  // ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  int generateRandomNumber() {
+    Random random = Random();
+    int min = 100000; // minimum 6-digit number
+    int max = 999999; // maximum 6-digit number
+    return min + random.nextInt(max - min);
   }
 
   String query = "";

@@ -35,4 +35,22 @@ class CartProvider with ChangeNotifier {
     }
     return subtotal;
   }
+
+  Future<void> deleteCartCollection() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("userCart")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+      print("Cart collection deleted successfully");
+    } catch (e) {
+      print("Error deleting cart collection: $e");
+    }
+  }
 }
