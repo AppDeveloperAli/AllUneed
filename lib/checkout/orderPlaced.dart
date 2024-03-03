@@ -61,33 +61,11 @@ class OrderPlacedScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: MyButton(
                 // onPressed: () => openCheckout(),
-                onPressed: () async {
-                  CollectionReference ordersCollection =
-                      FirebaseFirestore.instance.collection('orders');
-
-                  try {
-                    await ordersCollection
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .update({
-                      'orders': FieldValue.arrayUnion([
-                        {
-                          'orderID': orderID,
-                          'deliveryPasscode': deliveryPasscode,
-                          'delivered': false
-                        }
-                      ]),
-                    });
-                    CustomSnackBar(
-                        context, const Text('Order Placed Successfully'));
-                    Navigator.of(context).pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                      (route) => false,
-                    );
-                  } catch (e) {
-                    CustomSnackBar(context, Text('Error uploading order: $e'));
-                  }
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(builder: (context) => const HomePage()),
+                    (route) => false,
+                  );
                 },
                 text: "Back to Home",
               ),

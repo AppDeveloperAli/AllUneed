@@ -136,6 +136,9 @@ class _HomePageState extends State<HomePage> {
                   RoutingPage.goTonext(
                     context: context,
                     navigateTo: DetailsPage(
+                      productDescription: data['productDescription'],
+
+                      imageList: data["images"],
                       productCategory: data["productCategory"],
                       productId: data["productId"],
                       productImage: data["productImage"],
@@ -161,14 +164,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  final List<String> imageUrls = [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-    'https://example.com/image3.jpg',
-    'https://example.com/image4.jpg',
-    'https://example.com/image5.jpg',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -277,13 +272,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                     StreamBuilder(
                         stream: FirebaseFirestore.instance
-                            .collection('bestProducts')
+                            .collection('categories')
+                            .doc('8XY1m0i9TCn3WwsZZ9yv')
+                            .collection('Best Products')
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // Loading indicator while data is being fetched
+                            return const CircularProgressIndicator();
                           }
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
@@ -293,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                           }
                           return GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -306,9 +303,28 @@ class _HomePageState extends State<HomePage> {
                               final productData =
                                   product.data() as Map<String, dynamic>;
                               final List<dynamic> productImages =
-                                  productData['productImage'];
+                                  productData['images'];
                               return SingleProduct(
-                                onTap: () {},
+                                onTap: () {
+                                  RoutingPage.goTonext(
+                                    context: context,
+                                    navigateTo: DetailsPage(
+                                      imageList: productData['images'],
+                                      productDescription:
+                                          productData['productDescription'],
+                                      productCategory:
+                                          productData['categoryName'],
+                                      productId: productData['productId'],
+                                      productImage: productImages[0],
+                                      productName: productData['productName'],
+                                      // productOldPrice: data["productOldPrice"],
+                                      productPrice: productData['productRate'],
+                                      productRate: productData['productPrice'],
+                                      // productDescription:
+                                      //     data["productDescription"],
+                                    ),
+                                  );
+                                },
                                 productId: productData['productId'],
                                 productCategory: productData['prdouctCategory'],
                                 productRate: productData['productPrice'],
@@ -542,6 +558,10 @@ class _HomePageState extends State<HomePage> {
                                   RoutingPage.goTonext(
                                     context: context,
                                     navigateTo: DetailsPage(
+                                      productDescription:
+                                          data['productDescription'],
+
+                                      imageList: data["images"],
                                       productCategory: data["productCategory"],
                                       productId: data["productId"],
                                       productImage: data["productImage"],

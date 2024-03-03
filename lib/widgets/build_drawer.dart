@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fiv/pages/cartPage/cart_part.dart';
 import 'package:fiv/pages/favoritePage/favorite_page.dart';
+import 'package:fiv/pages/order/myorder.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/homepage/home_page.dart';
@@ -62,11 +63,17 @@ class BuildDrawer extends StatelessWidget {
             ),
             title: const Text("Favorite"),
           ),
-          const ListTile(
-            leading: Icon(
+          ListTile(
+            onTap: () {
+              RoutingPage.goTonext(
+                context: context,
+                navigateTo: const MyOrderScreen(),
+              );
+            },
+            leading: const Icon(
               Icons.shopping_basket_sharp,
             ),
-            title: Text("My Order"),
+            title: const Text("My Order"),
           ),
           ListTile(
             onTap: () {

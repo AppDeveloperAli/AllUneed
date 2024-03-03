@@ -3,6 +3,7 @@ import 'package:fiv/widgets/my_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../appColors/app_colors.dart';
 import '../../../route/routing_page.dart';
@@ -12,7 +13,7 @@ class SecondPart extends StatelessWidget {
   final double productPrice;
   // final double productOldPrice;
   final int productRate;
-  // final String productDescription;
+  final String productDescription;
   final String productId;
   final String productImage;
   final String productCategory;
@@ -21,7 +22,7 @@ class SecondPart extends StatelessWidget {
     required this.productCategory,
     required this.productImage,
     required this.productId,
-    // required this.productDescription,
+    required this.productDescription,
     required this.productName,
     required this.productPrice,
     // required this.productOldPrice,
@@ -34,27 +35,56 @@ class SecondPart extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          productName,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  productName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "INR $productPrice",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "INR $productRate",
+                    style: const TextStyle(
+                        fontSize: 18,
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.red),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        Row(
-          children: [
-            Text("INR $productPrice"),
-            const SizedBox(
-              width: 20,
-            ),
-            // Text(
-            //   "INR $productOldPrice",
-            //   style: const TextStyle(
-            //     decoration: TextDecoration.lineThrough,
-            //   ),
-            // ),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Text("INR $productPrice"),
+        //     const SizedBox(
+        //       width: 20,
+        //     ),
+        //     // Text(
+        //     //   "INR $productOldPrice",
+        //     //   style: const TextStyle(
+        //     //     decoration: TextDecoration.lineThrough,
+        //     //   ),
+        //     // ),
+        //   ],
+        // ),
         // Column(
         //   children: [
         //     const Divider(
@@ -98,10 +128,13 @@ class SecondPart extends StatelessWidget {
         //     fontWeight: FontWeight.bold,
         //   ),
         // ),
-        // Text(
-        //   productDescription,
-        //   style: const TextStyle(),
-        // ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            productDescription,
+            style: const TextStyle(),
+          ),
+        ),
       ],
     );
   }

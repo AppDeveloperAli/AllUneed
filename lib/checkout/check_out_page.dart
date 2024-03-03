@@ -1,12 +1,15 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fiv/pages/checkout/orderPlaced.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fiv/checkout/orderPlaced.dart';
+import 'package:fiv/model/cart_model.dart';
 import 'package:fiv/pages/detailPage/details_page.dart';
 import 'package:fiv/provider/cart_provider.dart';
 import 'package:fiv/route/routing_page.dart';
 import 'package:fiv/widgets/my_button.dart';
 import 'package:fiv/widgets/single_product.dart';
+import 'package:fiv/widgets/snackBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,6 +78,30 @@ class _CheckOutPageState extends State<CheckOutPage> {
   // void _handleExternalWallet(ExternalWalletResponse response) {
   //   print("EXTERNAL_WALLET ");
   // }
+
+  bool isLoading = false;
+
+  Future<String?> getFullName() async {
+    String? fullName;
+    String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+
+      if (snapshot.exists) {
+        fullName = snapshot['fullName'];
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+
+    return fullName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,20 +192,109 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   ),
                   cartProvider.getCartList.isEmpty
                       ? const Text("")
-                      : MyButton(
-                          // onPressed: () => openCheckout(),
-                          onPressed: () {
-                            cartProvider.deleteCartCollection();
-                            RoutingPage.goTonext(
-                                context: context,
-                                navigateTo: OrderPlacedScreen(
-                                  orderID: generateRandomNumber().toString(),
-                                  deliveryPasscode:
-                                      generateRandomNumber().toString(),
-                                ));
-                          },
-                          text: "Buy",
-                        ),
+                      : isLoading
+                          ? CircularProgressIndicator()
+                          : MyButton(
+                              // onPressed: () => openCheckout(),
+                              onPressed: () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                String orderID =
+                                    generateRandomNumber().toString();
+                                String deliveryPasscode =
+                                    generateRandomNumber().toString();
+                                CollectionReference ordersCollection =
+                                    FirebaseFirestore.instance
+                                        .collection('orders');
+                                CollectionReference otpCollection =
+                                    FirebaseFirestore.instance
+                                        .collection('otp');
+
+                                List<String> getProductNames(
+                                    List<CartModel> cartList) {
+                                  return cartList
+                                      .map((item) => item.productName)
+                                      .toList();
+                                }
+
+                                List<CartModel> cartList =
+                                    cartProvider.getCartList;
+                                List<String> productNames =
+                                    getProductNames(cartList);
+
+                                try {
+                                  final docSnapshot = await otpCollection
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .get();
+
+                                  String? fullName = await getFullName();
+
+                                  await otpCollection.doc().set({
+                                    'UiD':
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    'orderID': orderID,
+                                    'pinCode': deliveryPasscode,
+                                    'isDelivered': false,
+                                    'productNames': productNames,
+                                    'customerName': fullName,
+                                  });
+                                  // cartProvider.deleteCartCollection();
+
+                                  if (docSnapshot.exists) {
+                                    // Document exists, update it
+                                    await ordersCollection
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .update({
+                                      'orders': FieldValue.arrayUnion([
+                                        {
+                                          'orderID': orderID,
+                                          'deliveryPasscode': deliveryPasscode,
+                                          'productNames': productNames
+                                        }
+                                      ]),
+                                    });
+                                    cartProvider.deleteCartCollection();
+                                  } else {
+                                    // Document doesn't exist, create a new one
+                                    await ordersCollection
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .set({
+                                      'orders': [
+                                        {
+                                          'orderID': orderID,
+                                          'deliveryPasscode': deliveryPasscode,
+                                          'productNames': productNames
+                                        }
+                                      ]
+                                    });
+                                    cartProvider.deleteCartCollection();
+                                  }
+                                  CustomSnackBar(context,
+                                      const Text('Order Placed Successfully'));
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    CupertinoPageRoute(
+                                      builder: (context) => OrderPlacedScreen(
+                                        deliveryPasscode: deliveryPasscode,
+                                        orderID: orderID,
+                                      ),
+                                    ),
+                                    (route) => false,
+                                  );
+                                } catch (e) {
+                                  CustomSnackBar(context,
+                                      Text('Error uploading order: $e'));
+                                }
+
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              },
+                              text: "Buy",
+                            ),
                   // const ListTile(
                   //   leading: Text(
                   //     "Best Sell",
@@ -209,8 +325,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   int generateRandomNumber() {
     Random random = Random();
-    int min = 100000; // minimum 6-digit number
-    int max = 999999; // maximum 6-digit number
+    int min = 1000; // minimum 6-digit number
+    int max = 9999; // maximum 6-digit number
     return min + random.nextInt(max - min);
   }
 
@@ -249,6 +365,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   RoutingPage.goTonext(
                     context: context,
                     navigateTo: DetailsPage(
+                      productDescription: data['productDescription'],
+
+                      imageList: data["images"],
                       productCategory: data["productCategory"],
                       productId: data["productId"],
                       productImage: data["productImage"],

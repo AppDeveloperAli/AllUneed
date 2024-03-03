@@ -153,122 +153,121 @@ class _CartPageState extends State<CartPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body:
-          // cartProvider.getCartList.isEmpty
-          //     ? const Center(
-          //         child: Text("No Product"),
-          //       )
-          //     :
-          SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemCount: cartProvider.getCartList.length,
-              itemBuilder: (ctx, index) {
-                var data = cartProvider.cartList[index];
-                return SingleCartItem(
-                  productId: data.productId,
-                  productCategory: data.productCategory,
-                  productImage: data.productImage,
-                  productPrice: data.productPrice.toDouble(),
-                  productQuantity: data.productQuantity.toInt(),
-                  productName: data.productName,
-                );
-              },
-            ),
-            cartProvider.getCartList.isEmpty
-                ? Container()
-                : Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    color: Colors.white,
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 1,
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Text(
-                                'Available Time Slot\'s',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
+      body: cartProvider.getCartList.isEmpty
+          ? const Center(
+              child: Text("No Product"),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: cartProvider.getCartList.length,
+                    itemBuilder: (ctx, index) {
+                      var data = cartProvider.cartList[index];
+                      return SingleCartItem(
+                        productId: data.productId,
+                        productCategory: data.productCategory,
+                        productImage: data.productImage,
+                        productPrice: data.productPrice.toDouble(),
+                        productQuantity: data.productQuantity.toInt(),
+                        productName: data.productName,
+                      );
+                    },
+                  ),
+                  cartProvider.getCartList.isEmpty
+                      ? Container()
+                      : Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color: Colors.white,
+                          width: double.infinity,
+                          child: Card(
+                            elevation: 1,
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      'Available Time Slot\'s',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: CustomPaymentCardButton('5 : 30', 0),
+                                  ),
+                                  CustomPaymentCardButton('6 : 30', 1),
+                                  CustomPaymentCardButton('7 : 30', 2),
+                                  CustomPaymentCardButton('8 : 30', 3),
+                                  CustomPaymentCardButton('9 : 30', 4),
+                                  CustomPaymentCardButton('10 : 30', 5),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(top: 10),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Expanded(
+                                  //         child: ElevatedButton(
+                                  //             style: ButtonStyle(
+                                  //                 shape: MaterialStateProperty.all<
+                                  //                         RoundedRectangleBorder>(
+                                  //                     RoundedRectangleBorder(
+                                  //                         borderRadius:
+                                  //                             BorderRadius.circular(
+                                  //                                 18.0),
+                                  //                         side: const BorderSide(
+                                  //                             color: Colors.blue)))),
+                                  //             onPressed: () {
+                                  //               var snackBar = '';
+                                  //               switch (selectedPayment) {
+                                  //                 case 0:
+                                  //                   snackBar = '5:30';
+                                  //                   break;
+                                  //                 case 1:
+                                  //                   snackBar = '6:30';
+                                  //                   break;
+                                  //                 case 2:
+                                  //                   snackBar = '7:30';
+                                  //                   break;
+                                  //                 case 3:
+                                  //                   snackBar = '8:30';
+                                  //                   break;
+                                  //                 case 4:
+                                  //                   snackBar = '9:30';
+                                  //                   break;
+                                  //                 case 5:
+                                  //                   snackBar = '10:30';
+                                  //                   break;
+                                  //               }
+                                  //               final snackBarMsg = SnackBar(
+                                  //                 content: Text(
+                                  //                     'You select Time Slot : "$snackBar"'),
+                                  //               );
+                                  //               ScaffoldMessenger.of(context)
+                                  //                   .showSnackBar(snackBarMsg);
+                                  //             },
+                                  //             child: Text("SUBMIT".toUpperCase(),
+                                  //                 style: const TextStyle(
+                                  //                     fontSize: 14,
+                                  //                     color: Colors.blue))),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // )
+                                ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: CustomPaymentCardButton('5 : 30', 0),
-                            ),
-                            CustomPaymentCardButton('6 : 30', 1),
-                            CustomPaymentCardButton('7 : 30', 2),
-                            CustomPaymentCardButton('8 : 30', 3),
-                            CustomPaymentCardButton('9 : 30', 4),
-                            CustomPaymentCardButton('10 : 30', 5),
-                            // Padding(
-                            //   padding: const EdgeInsets.only(top: 10),
-                            //   child: Row(
-                            //     children: [
-                            //       Expanded(
-                            //         child: ElevatedButton(
-                            //             style: ButtonStyle(
-                            //                 shape: MaterialStateProperty.all<
-                            //                         RoundedRectangleBorder>(
-                            //                     RoundedRectangleBorder(
-                            //                         borderRadius:
-                            //                             BorderRadius.circular(
-                            //                                 18.0),
-                            //                         side: const BorderSide(
-                            //                             color: Colors.blue)))),
-                            //             onPressed: () {
-                            //               var snackBar = '';
-                            //               switch (selectedPayment) {
-                            //                 case 0:
-                            //                   snackBar = '5:30';
-                            //                   break;
-                            //                 case 1:
-                            //                   snackBar = '6:30';
-                            //                   break;
-                            //                 case 2:
-                            //                   snackBar = '7:30';
-                            //                   break;
-                            //                 case 3:
-                            //                   snackBar = '8:30';
-                            //                   break;
-                            //                 case 4:
-                            //                   snackBar = '9:30';
-                            //                   break;
-                            //                 case 5:
-                            //                   snackBar = '10:30';
-                            //                   break;
-                            //               }
-                            //               final snackBarMsg = SnackBar(
-                            //                 content: Text(
-                            //                     'You select Time Slot : "$snackBar"'),
-                            //               );
-                            //               ScaffoldMessenger.of(context)
-                            //                   .showSnackBar(snackBarMsg);
-                            //             },
-                            //             child: Text("SUBMIT".toUpperCase(),
-                            //                 style: const TextStyle(
-                            //                     fontSize: 14,
-                            //                     color: Colors.blue))),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-          ],
-        ),
-      ),
+                          ),
+                        )
+                ],
+              ),
+            ),
     );
   }
 }

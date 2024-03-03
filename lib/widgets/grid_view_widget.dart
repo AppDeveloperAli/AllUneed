@@ -106,6 +106,10 @@ class _GridViewWidgetState extends State<GridViewWidget> {
                               RoutingPage.goTonext(
                                 context: context,
                                 navigateTo: DetailsPage(
+                                  productDescription:
+                                      data['productDescription'],
+
+                                  imageList: data["images"],
                                   productCategory: data["productCategory"],
                                   productId: data["productId"],
                                   productImage: data["productImage"],

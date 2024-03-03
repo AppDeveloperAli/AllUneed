@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fiv/pages/cartPage/cart_part.dart';
@@ -18,15 +19,18 @@ class DetailsPage extends StatefulWidget {
   final String productId;
   // final double productOldPrice;
   final num productRate;
-  // final String productDescription;
+  List<dynamic> imageList;
 
-  const DetailsPage({
+  final String productDescription;
+
+  DetailsPage({
     Key? key,
     required this.productCategory,
     required this.productId,
-    // required this.productDescription,
+    required this.productDescription,
     required this.productName,
     required this.productImage,
+    required this.imageList,
     required this.productPrice,
     // required this.productOldPrice,
     required this.productRate,
@@ -76,6 +80,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     RoutingPage.goTonext(
                       context: context,
                       navigateTo: DetailsPage(
+                        imageList: data["images"],
                         productCategory: data["productCategory"],
                         productId: data["productId"],
                         productImage: data["productImage"],
@@ -83,7 +88,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         // productOldPrice: data["productOldPrice"],
                         productPrice: data["productPrice"],
                         productRate: data["productRate"],
-                        // productDescription: data["productDescription"],
+                        productDescription: data["productDescription"],
                       ),
                     );
                   },
@@ -102,105 +107,179 @@ class _DetailsPageState extends State<DetailsPage> {
       );
     }
 
+    final PageController _pageController = PageController(viewportFraction: 1);
+    int currentIndex = 1;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TopPart(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 250,
-                    width: 250,
-                    child: Card(
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.network(
-                        widget.productImage,
-                        fit: BoxFit.fill,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // const TopPart(),
+                SizedBox(
+                  height: 400,
+                  width: double.infinity,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          semanticContainer: true,
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: widget.imageList.isEmpty
+                              ? Image.asset('images/appicon.jpg')
+                              : PageView(
+                                  controller: _pageController,
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      currentIndex = index + 1;
+                                    });
+                                  },
+                                  children: widget.imageList
+                                      .map(
+                                        (imageUrl) => CachedNetworkImage(
+                                          key: UniqueKey(),
+                                          imageUrl: imageUrl,
+                                          fit: BoxFit.fill,
+                                          placeholder: (context, url) => Center(
+                                              child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            child: Image.asset(
+                                              'images/appicon.jpg',
+                                              fit: BoxFit.fill,
+                                            ),
+                                          )),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                      Positioned(
+                        top: 20,
+                        left: 20,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(30),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Center(
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      elevation: 5,
-                      margin: const EdgeInsets.all(10),
-                    ),
-                  ),
-                ],
-              ),
-              SecondPart(
-                productCategory: widget.productCategory,
-                productImage: widget.productImage,
-                productId: widget.productId,
-                // productDescription: productDescription,
-                productName: widget.productName,
-                // productOldPrice: productOldPrice,
-                productPrice: widget.productPrice.toDouble(),
-                productRate: widget.productRate.toInt(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20, top: 20),
-                child: MyButton(
-                  onPressed: () {
-                    FirebaseFirestore.instance
-                        .collection("cart")
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection("userCart")
-                        .doc(widget.productId)
-                        .set(
-                      {
-                        "productId": widget.productId,
-                        "productImage": widget.productImage,
-                        "productName": widget.productName,
-                        "productPrice": widget.productPrice,
-                        "productOldPrice": widget.productPrice,
-                        "productRate": widget.productRate,
-                        // "productDescription": productDescription,
-                        "productQuantity": 1,
-                        "productCategory": widget.productCategory,
-                      },
-                    );
-                    CustomSnackBar(
-                        context, const Text('Item added to Cart...'));
-                    // RoutingPage.goTonext(
-                    //   context: context,
-                    //   navigateTo: const CartPage(),
-                    // );
-                  },
-                  text: "Add to Cart",
-                ),
-              ),
-              const ListTile(
-                leading: Text(
-                  "Best Sell",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
+                      Positioned(
+                        bottom: 5,
+                        right: 5,
+                        child: widget.imageList.isEmpty
+                            ? Container()
+                            : Card(
+                                color: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  child: Text(
+                                    '$currentIndex / ${widget.imageList.length}',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: buildProduct(
-                  stream: FirebaseFirestore.instance
-                      .collection("products")
-                      .where("productRate", isGreaterThan: 4)
-                      .orderBy(
-                        "productRate",
-                        descending: true,
-                      )
-                      .snapshots(),
+                SecondPart(
+                  productCategory: widget.productCategory,
+                  productImage: widget.productImage,
+                  productId: widget.productId,
+                  productDescription: widget.productDescription,
+                  productName: widget.productName,
+                  // productOldPrice: productOldPrice,
+                  productPrice: widget.productPrice.toDouble(),
+                  productRate: widget.productRate.toInt(),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20, top: 20),
+                  child: MyButton(
+                    onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection("cart")
+                          .doc(FirebaseAuth.instance.currentUser?.uid)
+                          .collection("userCart")
+                          .doc(widget.productId)
+                          .set(
+                        {
+                          "productId": widget.productId,
+                          "productImage": widget.productImage,
+                          "productName": widget.productName,
+                          "productPrice": widget.productPrice,
+                          "productOldPrice": widget.productPrice,
+                          "productRate": widget.productRate,
+                          "productDescription": widget.productDescription,
+                          "productQuantity": 1,
+                          "productCategory": widget.productCategory,
+                        },
+                      );
+                      CustomSnackBar(
+                          context, const Text('Item added to Cart...'));
+                      // RoutingPage.goTonext(
+                      //   context: context,
+                      //   navigateTo: const CartPage(),
+                      // );
+                    },
+                    text: "Add to Cart",
+                  ),
+                ),
+                // const ListTile(
+                //   leading: Text(
+                //     "Best Sell",
+                //     style: TextStyle(
+                //       fontSize: 20,
+                //       fontWeight: FontWeight.normal,
+                //     ),
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 20),
+                //   child: buildProduct(
+                //     stream: FirebaseFirestore.instance
+                //         .collection("products")
+                //         .where("productRate", isGreaterThan: 4)
+                //         .orderBy(
+                //           "productRate",
+                //           descending: true,
+                //         )
+                //         .snapshots(),
+                //   ),
+                // ),
+              ],
+            ),
           ),
         ),
       ),
