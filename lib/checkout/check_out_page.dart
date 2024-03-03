@@ -30,14 +30,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
   // late Razorpay _razorpay;
   late double totalPrice;
 
-  @override
-  void initState() {
-    super.initState();
-    // _razorpay = Razorpay();
-    // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // _razorpay = Razorpay();
+  //   // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+  //   // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  //   // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  // }
 
   @override
   void dispose() {
@@ -103,6 +103,43 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return fullName;
   }
 
+  Map<String, dynamic>? specialData; // Variable to store special data
+
+  Future<Map<String, dynamic>?> fetchSpecialData() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('special')
+          .doc('UYmil6gQ34PgL51cLxcS')
+          .get();
+
+      if (snapshot.exists) {
+        return snapshot.data();
+      } else {
+        print('Document does not exist');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    totalPrice = 0.0; // Initialize totalPrice
+    fetchSpecialData().then((data) {
+      setState(() {
+        specialData = data;
+        if (specialData != null) {
+          totalPrice =
+              price(); // Calculate totalPrice only if special data is available
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
@@ -110,14 +147,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
     double subTotal = cartProvider.subTotal();
 
-    double discount = 5;
-    int shipping = 10;
+    // double discount = 5;
+    // int shipping = 10;
 
-    double discountValue = (subTotal * discount) / 100;
+    // double discountValue = (subTotal * discount) / 100;
 
-    double value = subTotal - discountValue;
+    // double value = subTotal - discountValue;
 
-    totalPrice = value += shipping;
+    // totalPrice = value += shipping;
 
     if (cartProvider.getCartList.isEmpty) {
       setState(() {
@@ -172,20 +209,26 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     leading: const Text("Sub Total"),
                     trailing: Text("₹ ${subTotal.toStringAsFixed(2)}"),
                   ),
-                  const ListTile(
-                    leading: Text("Discount"),
-                    trailing: Text("5 %"),
+                  ListTile(
+                    leading: const Text("Discount"),
+                    trailing: specialData != null &&
+                            specialData!.containsKey('discount')
+                        ? Text('${specialData!['discount'].toString()} %')
+                        : const Text('Loading...'),
                   ),
-                  const ListTile(
-                    leading: Text("Shiping"),
-                    trailing: Text("₹ 10"),
+                  ListTile(
+                    leading: const Text("Shipping"),
+                    trailing: specialData != null &&
+                            specialData!.containsKey('shiping')
+                        ? Text('₹ ${specialData!['shiping'].toString()}')
+                        : const Text('Loading...'),
                   ),
                   const Divider(
                     thickness: 2,
                   ),
                   ListTile(
                     leading: const Text("Total"),
-                    trailing: Text("₹ ${totalPrice.toStringAsFixed(2)}"),
+                    trailing: Text(price().toString()),
                   ),
                   const Divider(
                     thickness: 2,
@@ -193,7 +236,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   cartProvider.getCartList.isEmpty
                       ? const Text("")
                       : isLoading
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : MyButton(
                               // onPressed: () => openCheckout(),
                               onPressed: () async {
@@ -321,6 +364,27 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ),
       ),
     );
+  }
+
+  double price() {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    cartProvider.getCartData();
+
+    double subTotal = cartProvider.subTotal();
+
+    // Check if specialData is not null before accessing its properties
+    if (specialData != null) {
+      num discount = specialData!['discount'] ?? 0;
+      num shipping = specialData!['shiping'] ?? 0;
+
+      double discountValue = (subTotal * discount) / 100;
+
+      double value = subTotal - discountValue;
+
+      return value + shipping;
+    } else {
+      return 0.0; // Return a default value if specialData is null
+    }
   }
 
   int generateRandomNumber() {
