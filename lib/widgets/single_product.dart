@@ -16,6 +16,8 @@ class SingleProduct extends StatefulWidget {
   final productPrice;
   final productImage;
   final productName;
+  final images;
+  final productDescription;
   final Function()? onTap;
   const SingleProduct({
     Key? key,
@@ -23,6 +25,8 @@ class SingleProduct extends StatefulWidget {
     required this.productId,
     required this.productCategory,
     required this.productRate,
+    required this.images,
+    required this.productDescription,
     // required this.productOldPrice,
     required this.productPrice,
     required this.productImage,
@@ -88,6 +92,8 @@ class _SingleProductState extends State<SingleProduct> {
 
                     if (isFavorite == true) {
                       favoriteProvider.favorite(
+                        productDescription: widget.productDescription,
+                        images: widget.images,
                         productId: widget.productId,
                         productCategory: widget.productCategory,
                         productRate: widget.productRate,

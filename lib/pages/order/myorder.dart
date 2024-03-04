@@ -14,20 +14,18 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
     List<dynamic> orders = [];
     try {
       String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('orders')
-          .doc(currentUserId)
-          .get();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('orders')
+              .where('ID', isEqualTo: currentUserId)
+              .get();
 
-      if (snapshot.exists) {
-        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        if (data.containsKey('orders')) {
-          orders = data['orders'] as List<dynamic>;
-        } else {
-          print('orders field does not exist');
+      if (!querySnapshot.docs.isEmpty) {
+        for (var document in querySnapshot.docs) {
+          orders.add(document.data());
         }
       } else {
-        print('Document does not exist');
+        print('No orders found for this user.');
       }
     } catch (e) {
       print('Error: $e');
@@ -102,8 +100,6 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                                 )
                               ],
                             ),
-                            // Text(
-                            //     'Delivery Passcode: ${order['deliveryPasscode']}'),
                             Row(
                               children: [
                                 const Text('Product Names: '),
@@ -120,13 +116,6 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                                 ),
                               ],
                             ),
-                            // const Text('Product Names: '),
-                            // Column(
-                            //   children: (order['productNames'] as List<dynamic>)
-                            //       .map<Widget>((productName) =>
-                            //           Text(productName.toString()))
-                            //       .toList(),
-                            // ),
                           ],
                         ),
                       ),

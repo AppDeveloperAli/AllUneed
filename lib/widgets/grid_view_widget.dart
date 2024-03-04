@@ -108,11 +108,10 @@ class _GridViewWidgetState extends State<GridViewWidget> {
                                 navigateTo: DetailsPage(
                                   productDescription:
                                       data['productDescription'],
-
                                   imageList: data["images"],
-                                  productCategory: data["productCategory"],
+                                  productCategory: data["categoryName"],
                                   productId: data["productId"],
-                                  productImage: data["productImage"],
+                                  productImage: data["images"][0],
                                   productName: data["productName"],
                                   // productOldPrice: data["productOldPrice"],
                                   productPrice: data["productPrice"],
@@ -121,12 +120,14 @@ class _GridViewWidgetState extends State<GridViewWidget> {
                                 ),
                               );
                             },
+                            images: data["images"],
+                            productDescription: data['productDescription'],
                             productId: data["productId"],
-                            productCategory: data["productCategory"],
+                            productCategory: data["categoryName"],
                             productRate: data["productRate"],
                             // productOldPrice: data["productOldPrice"],
                             productPrice: data["productPrice"],
-                            productImage: data["productImage"],
+                            productImage: data["images"][0],
                             productName: data["productName"],
                           );
                         },

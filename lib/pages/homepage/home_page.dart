@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                       productDescription: data['productDescription'],
 
                       imageList: data["images"],
-                      productCategory: data["productCategory"],
+                      productCategory: data["categoryName"],
                       productId: data["productId"],
                       productImage: data["productImage"],
                       productName: data["productName"],
@@ -150,8 +150,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
+                images: data["images"],
+                productDescription: data['productDescription'],
                 productId: data["productId"],
-                productCategory: data["productCategory"],
+                productCategory: data["categoryName"],
                 productRate: data["productRate"],
                 // productOldPrice: data["productOldPrice"],
                 productPrice: data["productPrice"],
@@ -273,7 +275,7 @@ class _HomePageState extends State<HomePage> {
                     StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('categories')
-                            .doc('8XY1m0i9TCn3WwsZZ9yv')
+                            .doc('kXdRXhb9tRJXtVMLdyua')
                             .collection('Best Products')
                             .snapshots(),
                         builder: (BuildContext context,
@@ -325,8 +327,11 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
+                                images: productData["images"],
+                                productDescription:
+                                    productData['productDescription'],
                                 productId: productData['productId'],
-                                productCategory: productData['prdouctCategory'],
+                                productCategory: productData['categoryName'],
                                 productRate: productData['productPrice'],
                                 productPrice: productData['productRate'],
                                 productImage: productImages[0],
@@ -562,7 +567,7 @@ class _HomePageState extends State<HomePage> {
                                           data['productDescription'],
 
                                       imageList: data["images"],
-                                      productCategory: data["productCategory"],
+                                      productCategory: data["categoryName"],
                                       productId: data["productId"],
                                       productImage: data["productImage"],
                                       productName: data["productName"],
@@ -574,8 +579,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
+                                images: data["images"],
+                                productDescription: data['productDescription'],
                                 productId: data["productId"],
-                                productCategory: data["productCategory"],
+                                productCategory: data["categoryName"],
                                 productRate: data["productRate"],
                                 // productOldPrice: data["productOldPrice"],
                                 productPrice: data["productPrice"],

@@ -3,16 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class FavoriteProvider with ChangeNotifier {
-  void favorite({
-    required productId,
-    required productCategory,
-    required productRate,
-    // required productOldPrice,
-    required productPrice,
-    required productImage,
-    required productFavorite,
-    required productName,
-  }) {
+  void favorite(
+      {required productId,
+      required productCategory,
+      required productRate,
+      // required productOldPrice,
+      required productPrice,
+      required productImage,
+      required productFavorite,
+      required productName,
+      required images,
+      required productDescription}) {
     FirebaseFirestore.instance
         .collection("favorite")
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -22,12 +23,15 @@ class FavoriteProvider with ChangeNotifier {
       {
         "productId": productId,
         "productCategory": productCategory,
+        "categoryName": productCategory,
         "productRate": productRate,
         // "productOldPrice": productOldPrice,
         "productPrice": productPrice,
         "productImage": productImage,
         "productFavorite": productFavorite,
         "productName": productName,
+        "images": images,
+        "productDescription": productDescription
       },
     );
   }

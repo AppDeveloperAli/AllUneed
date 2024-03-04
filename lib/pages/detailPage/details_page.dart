@@ -92,6 +92,8 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     );
                   },
+                  images: data["images"],
+                  productDescription: data['productDescription'],
                   productId: data["productId"],
                   productCategory: data["productCategory"],
                   productRate: data["productRate"],

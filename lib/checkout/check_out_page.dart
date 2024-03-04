@@ -285,37 +285,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                   });
                                   // cartProvider.deleteCartCollection();
 
-                                  if (docSnapshot.exists) {
-                                    // Document exists, update it
-                                    await ordersCollection
-                                        .doc(FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                        .update({
-                                      'orders': FieldValue.arrayUnion([
-                                        {
-                                          'orderID': orderID,
-                                          'deliveryPasscode': deliveryPasscode,
-                                          'productNames': productNames
-                                        }
-                                      ]),
-                                    });
-                                    cartProvider.deleteCartCollection();
-                                  } else {
-                                    // Document doesn't exist, create a new one
-                                    await ordersCollection
-                                        .doc(FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                        .set({
-                                      'orders': [
-                                        {
-                                          'orderID': orderID,
-                                          'deliveryPasscode': deliveryPasscode,
-                                          'productNames': productNames
-                                        }
-                                      ]
-                                    });
-                                    cartProvider.deleteCartCollection();
-                                  }
+                                  await ordersCollection.doc().set({
+                                    'orderID': orderID,
+                                    'deliveryPasscode': deliveryPasscode,
+                                    'productNames': productNames,
+                                    'ID':
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                  });
+                                  cartProvider.deleteCartCollection();
                                   CustomSnackBar(context,
                                       const Text('Order Placed Successfully'));
                                   Navigator.of(context).pushAndRemoveUntil(
@@ -374,8 +351,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
     // Check if specialData is not null before accessing its properties
     if (specialData != null) {
-      num discount = specialData!['discount'] ?? 0;
-      num shipping = specialData!['shiping'] ?? 0;
+      num discount = double.tryParse(specialData!['discount'] ?? '0') ?? 0;
+      num shipping = double.tryParse(specialData!['shipping'] ?? '0') ?? 0;
 
       double discountValue = (subTotal * discount) / 100;
 
@@ -443,6 +420,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     ),
                   );
                 },
+                images: data["images"],
+                productDescription: data['productDescription'],
                 productId: data["productId"],
                 productCategory: data["productCategory"],
                 productRate: data["productRate"],
