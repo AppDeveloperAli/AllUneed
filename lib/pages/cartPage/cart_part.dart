@@ -51,7 +51,7 @@ class _CartPageState extends State<CartPage> {
     // Check if the difference is 5 hours or more in the future
     bool isAtLeastFiveHoursLater = differenceInHours <= 5;
 
-    return OutlinedButton(
+    return ElevatedButton(
       onPressed: () {
         if (isAtLeastFiveHoursLater) {
           setState(() {
@@ -59,7 +59,7 @@ class _CartPageState extends State<CartPage> {
           });
         }
       },
-      style: OutlinedButton.styleFrom(
+      style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

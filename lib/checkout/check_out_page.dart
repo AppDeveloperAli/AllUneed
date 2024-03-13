@@ -223,6 +223,20 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         ? Text('₹ ${specialData!['shiping'].toString()}')
                         : const Text('Loading...'),
                   ),
+                  ListTile(
+                    leading: const Text("Packing Charges"),
+                    trailing: specialData != null &&
+                            specialData!.containsKey('packingCharges')
+                        ? Text('₹ ${specialData!['packingCharges'].toString()}')
+                        : const Text('Loading...'),
+                  ),
+                  ListTile(
+                    leading: const Text("Delivery Tax"),
+                    trailing: specialData != null &&
+                            specialData!.containsKey('deliveryTax')
+                        ? Text('${specialData!['deliveryTax'].toString()} %')
+                        : const Text('Loading...'),
+                  ),
                   const Divider(
                     thickness: 2,
                   ),
@@ -353,12 +367,22 @@ class _CheckOutPageState extends State<CheckOutPage> {
     if (specialData != null) {
       num discount = double.tryParse(specialData!['discount'] ?? '0') ?? 0;
       num shipping = double.tryParse(specialData!['shipping'] ?? '0') ?? 0;
+      num deliveryTax =
+          double.tryParse(specialData!['deliveryTax'] ?? '0') ?? 0;
+      num packingCharges =
+          double.tryParse(specialData!['packingCharges'] ?? '0') ?? 0;
 
       double discountValue = (subTotal * discount) / 100;
 
       double value = subTotal - discountValue;
 
-      return value + shipping;
+// Calculate tax amount based on the deliveryTax percentage
+      double taxAmount = (value * deliveryTax) / 100;
+
+      // Add tax amount to the total value
+      value += taxAmount;
+
+      return value + shipping + packingCharges;
     } else {
       return 0.0; // Return a default value if specialData is null
     }

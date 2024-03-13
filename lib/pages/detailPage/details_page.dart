@@ -156,7 +156,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                             height: double.infinity,
                                             child: Image.asset(
                                               'images/appicon.jpg',
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.contain,
                                             ),
                                           )),
                                           errorWidget: (context, url, error) =>
