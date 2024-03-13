@@ -136,11 +136,24 @@ class _SingleProductState extends State<SingleProduct> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    "Rs ${widget.productPrice}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Rs ${widget.productPrice}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Rs ${widget.productRate}",
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.red,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

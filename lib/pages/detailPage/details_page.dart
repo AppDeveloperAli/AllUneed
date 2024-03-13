@@ -149,7 +149,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                         (imageUrl) => CachedNetworkImage(
                                           key: UniqueKey(),
                                           imageUrl: imageUrl,
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.contain,
                                           placeholder: (context, url) => Center(
                                               child: Container(
                                             width: double.infinity,
@@ -168,8 +168,8 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                       ),
                       Positioned(
-                        top: 20,
-                        left: 20,
+                        top: 10,
+                        left: 10,
                         child: Container(
                           width: 60,
                           height: 60,
