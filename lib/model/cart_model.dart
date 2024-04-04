@@ -5,6 +5,7 @@ class CartModel {
   final String productCategory;
   final String productImage;
   final num productPrice;
+  final num productRate;
   final num productQuantity;
   final String productName;
   CartModel({
@@ -13,6 +14,7 @@ class CartModel {
     required this.productImage,
     required this.productName,
     required this.productPrice,
+    required this.productRate,
     required this.productQuantity,
   });
   factory CartModel.fromDocument(QueryDocumentSnapshot doc) {
@@ -21,6 +23,7 @@ class CartModel {
       productCategory: doc["productCategory"],
       productImage: doc["productImage"],
       productPrice: doc["productPrice"],
+      productRate: doc["productRate"],
       productQuantity: doc["productQuantity"],
       productName: doc["productName"],
     );

@@ -125,6 +125,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
     }
   }
 
+  String savedPrice = '';
+
   @override
   void initState() {
     super.initState();
@@ -140,10 +142,42 @@ class _CheckOutPageState extends State<CheckOutPage> {
     });
   }
 
+  Widget yellowCard() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.yellow.shade100,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.star,
+              color: Colors.green,
+            ),
+            Text(
+              ' You saving from this order : ₹ $savedPrice',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     cartProvider.getCartData();
+
+    print(savedPrice);
 
     double subTotal = cartProvider.subTotal();
 
@@ -186,7 +220,24 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     physics: const BouncingScrollPhysics(),
                     itemCount: cartProvider.getCartList.length,
                     itemBuilder: (ctx, index) {
+                      CartProvider? cartProvider =
+                          Provider.of<CartProvider>(context);
+
+                      if (cartProvider != null) {
+                        var cartList = cartProvider.cartList;
+
+                        double totalDifference =
+                            0; // Variable to store the total difference
+
+                        for (var data in cartList) {
+                          totalDifference +=
+                              (data.productRate - data.productPrice);
+                        }
+                        savedPrice = totalDifference.toString();
+                      }
+
                       var data = cartProvider.cartList[index];
+
                       return SingleCartItem(
                         productId: data.productId,
                         productCategory: data.productCategory,
@@ -197,160 +248,186 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       );
                     },
                   ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Text("Picked Time"),
-                    trailing: Text('${widget.time.toString()} PM'),
-                  ),
-                  ListTile(
-                    leading: const Text("Sub Total"),
-                    trailing: Text("₹ ${subTotal.toStringAsFixed(2)}"),
-                  ),
-                  ListTile(
-                    leading: const Text("Discount"),
-                    trailing: specialData != null &&
-                            specialData!.containsKey('discount')
-                        ? Text('${specialData!['discount'].toString()} %')
-                        : const Text('Loading...'),
-                  ),
-                  ListTile(
-                    leading: const Text("Shipping"),
-                    trailing: specialData != null &&
-                            specialData!.containsKey('shiping')
-                        ? Text('₹ ${specialData!['shiping'].toString()}')
-                        : const Text('Loading...'),
-                  ),
-                  ListTile(
-                    leading: const Text("Packing Charges"),
-                    trailing: specialData != null &&
-                            specialData!.containsKey('packingCharges')
-                        ? Text('₹ ${specialData!['packingCharges'].toString()}')
-                        : const Text('Loading...'),
-                  ),
-                  ListTile(
-                    leading: const Text("Delivery Tax"),
-                    trailing: specialData != null &&
-                            specialData!.containsKey('deliveryTax')
-                        ? Text('${specialData!['deliveryTax'].toString()} %')
-                        : const Text('Loading...'),
-                  ),
-                  const Divider(
-                    thickness: 2,
-                  ),
-                  ListTile(
-                    leading: const Text("Total"),
-                    trailing: Text(price().toString()),
-                  ),
-                  const Divider(
-                    thickness: 2,
-                  ),
-                  cartProvider.getCartList.isEmpty
-                      ? const Text("")
-                      : isLoading
-                          ? const CircularProgressIndicator()
-                          : MyButton(
-                              // onPressed: () => openCheckout(),
-                              onPressed: () async {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                String orderID =
-                                    generateRandomNumber().toString();
-                                String deliveryPasscode =
-                                    generateRandomNumber().toString();
-                                CollectionReference ordersCollection =
-                                    FirebaseFirestore.instance
-                                        .collection('orders');
-                                CollectionReference otpCollection =
-                                    FirebaseFirestore.instance
-                                        .collection('otp');
-
-                                List<String> getProductNames(
-                                    List<CartModel> cartList) {
-                                  return cartList
-                                      .map((item) => item.productName)
-                                      .toList();
-                                }
-
-                                List<CartModel> cartList =
-                                    cartProvider.getCartList;
-                                List<String> productNames =
-                                    getProductNames(cartList);
-
-                                try {
-                                  final docSnapshot = await otpCollection
-                                      .doc(FirebaseAuth
-                                          .instance.currentUser!.uid)
-                                      .get();
-
-                                  String? fullName = await getFullName();
-
-                                  await otpCollection.doc().set({
-                                    'UiD':
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                    'orderID': orderID,
-                                    'pinCode': deliveryPasscode,
-                                    'isDelivered': false,
-                                    'productNames': productNames,
-                                    'customerName': fullName,
-                                  });
-                                  // cartProvider.deleteCartCollection();
-
-                                  await ordersCollection.doc().set({
-                                    'orderID': orderID,
-                                    'deliveryPasscode': deliveryPasscode,
-                                    'productNames': productNames,
-                                    'ID':
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                  });
-                                  cartProvider.deleteCartCollection();
-                                  CustomSnackBar(context,
-                                      const Text('Order Placed Successfully'));
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    CupertinoPageRoute(
-                                      builder: (context) => OrderPlacedScreen(
-                                        deliveryPasscode: deliveryPasscode,
-                                        orderID: orderID,
-                                      ),
-                                    ),
-                                    (route) => false,
-                                  );
-                                } catch (e) {
-                                  CustomSnackBar(context,
-                                      Text('Error uploading order: $e'));
-                                }
-
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              },
-                              text: "Buy",
+            cartProvider.getCartList.isEmpty
+                ? const Text("")
+                : isLoading
+                    ? const CircularProgressIndicator()
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: const Text("Picked Time"),
+                              trailing: Text('${widget.time.toString()} PM'),
                             ),
-                  // const ListTile(
-                  //   leading: Text(
-                  //     "Best Sell",
-                  //     style: TextStyle(
-                  //       fontSize: 20,
-                  //       fontWeight: FontWeight.normal,
-                  //     ),
-                  //   ),
-                  // ),
-                  // buildProduct(
-                  //   stream: FirebaseFirestore.instance
-                  //       .collection("products")
-                  //       .where("productRate", isGreaterThan: 4)
-                  //       .orderBy(
-                  //         "productRate",
-                  //         descending: true,
-                  //       )
-                  //       .snapshots(),
-                  // ),
-                ],
-              ),
-            ),
+                            ListTile(
+                              leading: const Text("Sub Total"),
+                              trailing:
+                                  Text("₹ ${subTotal.toStringAsFixed(2)}"),
+                            ),
+                            ListTile(
+                              leading: const Text("Discount"),
+                              trailing: specialData != null &&
+                                      specialData!.containsKey('discount')
+                                  ? Text(
+                                      '${specialData!['discount'].toString()} %')
+                                  : const Text('Loading...'),
+                            ),
+                            ListTile(
+                              leading: const Text("Shipping"),
+                              trailing: specialData != null &&
+                                      specialData!.containsKey('shiping')
+                                  ? Text(
+                                      '₹ ${specialData!['shiping'].toString()}')
+                                  : const Text('Loading...'),
+                            ),
+                            ListTile(
+                              leading: const Text("Packing Charges"),
+                              trailing: specialData != null &&
+                                      specialData!.containsKey('packingCharges')
+                                  ? Text(
+                                      '₹ ${specialData!['packingCharges'].toString()}')
+                                  : const Text('Loading...'),
+                            ),
+                            ListTile(
+                              leading: const Text("Delivery Tax"),
+                              trailing: specialData != null &&
+                                      specialData!.containsKey('deliveryTax')
+                                  ? Text(
+                                      '${specialData!['deliveryTax'].toString()} %')
+                                  : const Text('Loading...'),
+                            ),
+                            const Divider(
+                              thickness: 2,
+                            ),
+                            ListTile(
+                              leading: const Text("Total"),
+                              trailing: Text(price().toString()),
+                            ),
+                            const Divider(
+                              thickness: 2,
+                            ),
+
+                            cartProvider.getCartList.isEmpty
+                                ? const Text("")
+                                : isLoading
+                                    ? const CircularProgressIndicator()
+                                    : yellowCard(),
+
+                            cartProvider.getCartList.isEmpty
+                                ? const Text("")
+                                : isLoading
+                                    ? const CircularProgressIndicator()
+                                    : MyButton(
+                                        // onPressed: () => openCheckout(),
+                                        onPressed: () async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          String orderID =
+                                              generateRandomNumber().toString();
+                                          String deliveryPasscode =
+                                              generateRandomNumber().toString();
+                                          CollectionReference ordersCollection =
+                                              FirebaseFirestore.instance
+                                                  .collection('orders');
+                                          CollectionReference otpCollection =
+                                              FirebaseFirestore.instance
+                                                  .collection('otp');
+
+                                          List<String> getProductNames(
+                                              List<CartModel> cartList) {
+                                            return cartList
+                                                .map((item) => item.productName)
+                                                .toList();
+                                          }
+
+                                          List<CartModel> cartList =
+                                              cartProvider.getCartList;
+                                          List<String> productNames =
+                                              getProductNames(cartList);
+
+                                          try {
+                                            final docSnapshot =
+                                                await otpCollection
+                                                    .doc(FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                    .get();
+
+                                            String? fullName =
+                                                await getFullName();
+
+                                            await otpCollection.doc().set({
+                                              'UiD': FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                              'orderID': orderID,
+                                              'pinCode': deliveryPasscode,
+                                              'isDelivered': false,
+                                              'productNames': productNames,
+                                              'customerName': fullName,
+                                            });
+                                            // cartProvider.deleteCartCollection();
+
+                                            await ordersCollection.doc().set({
+                                              'orderID': orderID,
+                                              'deliveryPasscode':
+                                                  deliveryPasscode,
+                                              'productNames': productNames,
+                                              'ID': FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                            });
+                                            cartProvider.deleteCartCollection();
+                                            CustomSnackBar(
+                                                context,
+                                                const Text(
+                                                    'Order Placed Successfully'));
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    OrderPlacedScreen(
+                                                  deliveryPasscode:
+                                                      deliveryPasscode,
+                                                  orderID: orderID,
+                                                ),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          } catch (e) {
+                                            CustomSnackBar(
+                                                context,
+                                                Text(
+                                                    'Error uploading order: $e'));
+                                          }
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        },
+                                        text: "Buy",
+                                      ),
+                            // const ListTile(
+                            //   leading: Text(
+                            //     "Best Sell",
+                            //     style: TextStyle(
+                            //       fontSize: 20,
+                            //       fontWeight: FontWeight.normal,
+                            //     ),
+                            //   ),
+                            // ),
+                            // buildProduct(
+                            //   stream: FirebaseFirestore.instance
+                            //       .collection("products")
+                            //       .where("productRate", isGreaterThan: 4)
+                            //       .orderBy(
+                            //         "productRate",
+                            //         descending: true,
+                            //       )
+                            //       .snapshots(),
+                            // ),
+                          ],
+                        ),
+                      ),
           ],
         ),
       ),

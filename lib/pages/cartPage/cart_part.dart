@@ -16,7 +16,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  int selectedPayment = 0;
+  int? selectedPayment;
+
   Widget CustomPaymentCardButton(String title, int index) {
     // Parse the time string to get hour and minute values
     List<String> timeParts = title.split(' : ');
@@ -31,29 +32,28 @@ class _CartPageState extends State<CartPage> {
 
     // Convert TimeOfDay to DateTime for easier comparison
     DateTime currentDateTime = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        currentTime.hour,
-        currentTime.minute);
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      currentTime.hour,
+      currentTime.minute,
+    );
 
     // Convert storedTime to DateTime for easier comparison
     DateTime storedDateTime = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        storedTime.hour,
-        storedTime.minute);
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      storedTime.hour,
+      storedTime.minute,
+    );
 
-    // Calculate the difference in hours
-    int differenceInHours = storedDateTime.difference(currentDateTime).inHours;
-
-    // Check if the difference is 5 hours or more in the future
-    bool isAtLeastFiveHoursLater = differenceInHours <= 5;
+    // Check if stored time is in the past
+    bool isPastTime = storedDateTime.isBefore(currentDateTime);
 
     return ElevatedButton(
       onPressed: () {
-        if (isAtLeastFiveHoursLater) {
+        if (!isPastTime) {
           setState(() {
             selectedPayment = index;
           });
@@ -64,31 +64,24 @@ class _CartPageState extends State<CartPage> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         side: BorderSide(
-            width: (selectedPayment == index) ? 2.0 : 0.5,
-            color: (selectedPayment == index)
-                ? Colors.green
-                : Colors.blue.shade600),
+          width: (selectedPayment == index) ? 2.0 : 0.5,
+          color:
+              (selectedPayment == index) ? Colors.green : Colors.blue.shade600,
+        ),
       ),
       child: Stack(
         children: [
           Center(
-            child: isAtLeastFiveHoursLater
-                ? Text(
-                    '$title PM',
-                    style: TextStyle(
-                        color: (selectedPayment == index)
-                            ? Colors.green
-                            : Colors.black),
-                  )
-                : Text(
-                    '$title PM',
-                    style: TextStyle(
-                        color: (selectedPayment == index)
-                            ? Colors.green
-                            : Colors.black26),
-                  ),
+            child: Text(
+              '$title PM',
+              style: TextStyle(
+                color: isPastTime
+                    ? Colors.black26
+                    : (selectedPayment == index ? Colors.green : Colors.black),
+              ),
+            ),
           ),
-          if (selectedPayment == index && isAtLeastFiveHoursLater)
+          if (selectedPayment == index && !isPastTime)
             Positioned(
               top: -2,
               right: 0,
@@ -135,18 +128,26 @@ class _CartPageState extends State<CartPage> {
                     snackBar = '10:30';
                     break;
                 }
-                final snackBarMsg = SnackBar(
-                  content: Text('You select Time Slot : "$snackBar"'),
-                );
 
-                ScaffoldMessenger.of(context).showSnackBar(snackBarMsg);
+                if (selectedPayment != null) {
+                  final snackBarMsg = SnackBar(
+                    content: Text('You select Time Slot : "$snackBar"'),
+                  );
 
-                RoutingPage.goTonext(
-                  context: context,
-                  navigateTo: CheckOutPage(
-                    time: snackBar,
-                  ),
-                );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarMsg);
+                  RoutingPage.goTonext(
+                    context: context,
+                    navigateTo: CheckOutPage(
+                      time: snackBar,
+                    ),
+                  );
+                } else {
+                  final snackBarMsg = SnackBar(
+                    content: Text('Please select a Time Slot First...'),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarMsg);
+                }
               },
             ),
       appBar: AppBar(
@@ -208,58 +209,6 @@ class _CartPageState extends State<CartPage> {
                                   CustomPaymentCardButton('8 : 30', 3),
                                   CustomPaymentCardButton('9 : 30', 4),
                                   CustomPaymentCardButton('10 : 30', 5),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(top: 10),
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Expanded(
-                                  //         child: ElevatedButton(
-                                  //             style: ButtonStyle(
-                                  //                 shape: MaterialStateProperty.all<
-                                  //                         RoundedRectangleBorder>(
-                                  //                     RoundedRectangleBorder(
-                                  //                         borderRadius:
-                                  //                             BorderRadius.circular(
-                                  //                                 18.0),
-                                  //                         side: const BorderSide(
-                                  //                             color: Colors.blue)))),
-                                  //             onPressed: () {
-                                  //               var snackBar = '';
-                                  //               switch (selectedPayment) {
-                                  //                 case 0:
-                                  //                   snackBar = '5:30';
-                                  //                   break;
-                                  //                 case 1:
-                                  //                   snackBar = '6:30';
-                                  //                   break;
-                                  //                 case 2:
-                                  //                   snackBar = '7:30';
-                                  //                   break;
-                                  //                 case 3:
-                                  //                   snackBar = '8:30';
-                                  //                   break;
-                                  //                 case 4:
-                                  //                   snackBar = '9:30';
-                                  //                   break;
-                                  //                 case 5:
-                                  //                   snackBar = '10:30';
-                                  //                   break;
-                                  //               }
-                                  //               final snackBarMsg = SnackBar(
-                                  //                 content: Text(
-                                  //                     'You select Time Slot : "$snackBar"'),
-                                  //               );
-                                  //               ScaffoldMessenger.of(context)
-                                  //                   .showSnackBar(snackBarMsg);
-                                  //             },
-                                  //             child: Text("SUBMIT".toUpperCase(),
-                                  //                 style: const TextStyle(
-                                  //                     fontSize: 14,
-                                  //                     color: Colors.blue))),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // )
                                 ],
                               ),
                             ),
