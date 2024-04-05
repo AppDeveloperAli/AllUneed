@@ -541,6 +541,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     context: context,
                     navigateTo: DetailsPage(
                       productDescription: data['productDescription'],
+                      remaining: data['productUnits'].toString(),
 
                       imageList: data["images"],
                       productCategory: data["productCategory"],

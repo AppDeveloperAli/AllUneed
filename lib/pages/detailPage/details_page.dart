@@ -17,6 +17,7 @@ class DetailsPage extends StatefulWidget {
   final String productCategory;
   final num productPrice;
   final String productId;
+  final String remaining;
   // final double productOldPrice;
   final num productRate;
   List<dynamic> imageList;
@@ -25,6 +26,7 @@ class DetailsPage extends StatefulWidget {
 
   DetailsPage({
     Key? key,
+    required this.remaining,
     required this.productCategory,
     required this.productId,
     required this.productDescription,
@@ -80,6 +82,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     RoutingPage.goTonext(
                       context: context,
                       navigateTo: DetailsPage(
+                        remaining: widget.remaining,
                         imageList: data["images"],
                         productCategory: data["productCategory"],
                         productId: data["productId"],
@@ -225,6 +228,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   // productOldPrice: productOldPrice,
                   productPrice: widget.productPrice.toDouble(),
                   productRate: widget.productRate.toInt(),
+                  reamaining: widget.remaining,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20, top: 20),
