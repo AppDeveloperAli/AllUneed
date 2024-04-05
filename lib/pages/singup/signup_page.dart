@@ -21,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController password = TextEditingController();
 
   bool isObsecure = true;
+  String? selectedOption;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _SignupPageState extends State<SignupPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Sign Up'),
+        title: const Text('Sign Up'),
       ),
       body: SafeArea(
         child: Padding(
@@ -106,6 +107,39 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
+                    RadioListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: const Text('MIT'),
+                      value: 'MIT',
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedOption = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: const Text('NITTE'),
+                      value: 'NITTE',
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedOption = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: const Text('MVIT'),
+                      value: 'MVIT',
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedOption = value!;
+                        });
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -116,11 +150,20 @@ class _SignupPageState extends State<SignupPage> {
                     signupAuthProvider.loading == false
                         ? MyButton(
                             onPressed: () {
-                              signupAuthProvider.signupVaidation(
-                                  emailAdress: email,
-                                  fullName: fullName,
-                                  password: password,
-                                  context: context);
+                              if (selectedOption != null) {
+                                signupAuthProvider.signupVaidation(
+                                    emailAdress: email,
+                                    fullName: fullName,
+                                    password: password,
+                                    college: selectedOption!,
+                                    context: context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Please select a College"),
+                                  ),
+                                );
+                              }
                             },
                             text: "SIGN UP",
                           )

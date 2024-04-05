@@ -104,6 +104,28 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return fullName;
   }
 
+  Future<String?> getcOLLEGE() async {
+    String? fullName;
+    String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+
+      if (snapshot.exists) {
+        fullName = snapshot['college'];
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+
+    return fullName;
+  }
+
   Map<String, dynamic>? specialData; // Variable to store special data
 
   Future<Map<String, dynamic>?> fetchSpecialData() async {
@@ -357,6 +379,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                             String? fullName =
                                                 await getFullName();
 
+                                            String? getCollege =
+                                                await getcOLLEGE();
+
                                             await otpCollection.doc().set({
                                               'UiD': FirebaseAuth
                                                   .instance.currentUser!.uid,
@@ -366,7 +391,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               'productNames': productNames,
                                               'customerName': fullName,
                                               'DateTime': formattedDate,
-                                              'PickedTime': '${widget.time} PM'
+                                              'PickedTime': '${widget.time} PM',
+                                              'College': getCollege,
                                             });
                                             // cartProvider.deleteCartCollection();
 
@@ -380,7 +406,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                   .instance.currentUser!.uid,
                                               'isDelivered': false,
                                               'DateTime': formattedDate,
-                                              'PickedTime': '${widget.time} PM'
+                                              'PickedTime': '${widget.time} PM',
+                                              'College': getCollege,
                                             });
                                             cartProvider.deleteCartCollection();
                                             CustomSnackBar(

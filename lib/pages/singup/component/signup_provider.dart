@@ -13,6 +13,7 @@ class SignupAuthProvider with ChangeNotifier {
       {required TextEditingController? fullName,
       required TextEditingController? emailAdress,
       required TextEditingController? password,
+      required String college,
       required BuildContext context}) async {
     if (fullName!.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,6 +64,7 @@ class SignupAuthProvider with ChangeNotifier {
             "emailAdress": emailAdress.text,
             "password": password.text,
             "userUid": userCredential!.user?.uid,
+            "college": college
           },
         ).then((value) {
           loading = false;

@@ -90,12 +90,21 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                             ),
                             Row(
                               children: [
+                                const Text('College: '),
+                                Text(
+                                  order['College'],
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
                                 const Text('Order ID: '),
                                 Text(
                                   order['orderID'],
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20),
+                                      fontSize: 20,
+                                      color: Colors.red),
                                 )
                               ],
                             ),
@@ -106,7 +115,8 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                                   order['deliveryPasscode'],
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20),
+                                      fontSize: 20,
+                                      color: Colors.red),
                                 )
                               ],
                             ),
