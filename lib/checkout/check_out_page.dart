@@ -12,6 +12,7 @@ import 'package:fiv/widgets/single_product.dart';
 import 'package:fiv/widgets/snackBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 // import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -159,7 +160,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               color: Colors.green,
             ),
             Text(
-              ' You saving from this order : ₹ $savedPrice',
+              ' You savied from this order : ₹ $savedPrice',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.green,
@@ -347,13 +348,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                           List<String> productNames =
                                               getProductNames(cartList);
 
-                                          try {
-                                            final docSnapshot =
-                                                await otpCollection
-                                                    .doc(FirebaseAuth.instance
-                                                        .currentUser!.uid)
-                                                    .get();
+                                          DateTime now = DateTime.now();
+                                          String formattedDate = DateFormat(
+                                                  'kk:mm:ss - EEE dd MMMM')
+                                              .format(now);
 
+                                          try {
                                             String? fullName =
                                                 await getFullName();
 
@@ -365,6 +365,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               'isDelivered': false,
                                               'productNames': productNames,
                                               'customerName': fullName,
+                                              'DateTime': formattedDate,
+                                              'PickedTime': '${widget.time} PM'
                                             });
                                             // cartProvider.deleteCartCollection();
 
@@ -373,8 +375,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               'deliveryPasscode':
                                                   deliveryPasscode,
                                               'productNames': productNames,
+                                              'customerName': fullName,
                                               'ID': FirebaseAuth
                                                   .instance.currentUser!.uid,
+                                              'isDelivered': false,
+                                              'DateTime': formattedDate,
+                                              'PickedTime': '${widget.time} PM'
                                             });
                                             cartProvider.deleteCartCollection();
                                             CustomSnackBar(

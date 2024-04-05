@@ -16,21 +16,17 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  int? selectedPayment;
+  int selectedPayment = 0;
 
   Widget CustomPaymentCardButton(String title, int index) {
-    // Parse the time string to get hour and minute values
     List<String> timeParts = title.split(' : ');
     int hour = int.parse(timeParts[0]);
     int minute = int.parse(timeParts[1]);
 
-    // Create a TimeOfDay object for the specified time
     TimeOfDay storedTime = TimeOfDay(hour: hour, minute: minute);
 
-    // Get the current time
     TimeOfDay currentTime = TimeOfDay.now();
 
-    // Convert TimeOfDay to DateTime for easier comparison
     DateTime currentDateTime = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -39,7 +35,6 @@ class _CartPageState extends State<CartPage> {
       currentTime.minute,
     );
 
-    // Convert storedTime to DateTime for easier comparison
     DateTime storedDateTime = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -48,7 +43,6 @@ class _CartPageState extends State<CartPage> {
       storedTime.minute,
     );
 
-    // Check if stored time is in the past
     bool isPastTime = storedDateTime.isBefore(currentDateTime);
 
     return ElevatedButton(
@@ -142,8 +136,9 @@ class _CartPageState extends State<CartPage> {
                     ),
                   );
                 } else {
-                  final snackBarMsg = SnackBar(
-                    content: Text('Please select a Time Slot First...'),
+                  const snackBarMsg = SnackBar(
+                    content:
+                        Text('Please select a Time Or Wait Until Tomorrow...'),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBarMsg);

@@ -80,6 +80,16 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                           children: [
                             Row(
                               children: [
+                                const Text('Status: '),
+                                Text(
+                                  order['isDelivered']
+                                      ? 'Delivered'
+                                      : 'In Queue',
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
                                 const Text('Order ID: '),
                                 Text(
                                   order['orderID'],
@@ -102,19 +112,33 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                             ),
                             Row(
                               children: [
-                                const Text('Product Names: '),
-                                Column(
-                                  children:
-                                      (order['productNames'] as List<dynamic>)
-                                          .map<Widget>((productName) => Text(
-                                                productName.toString(),
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ))
-                                          .toList(),
-                                ),
+                                const Text('Picked Time: '),
+                                Text(
+                                  order['PickedTime'],
+                                )
                               ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('Date & Time: '),
+                                Text(
+                                  order['DateTime'],
+                                )
+                              ],
+                            ),
+                            const Text('Product Names: '),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: (order['productNames'] as List<dynamic>)
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                int index = entry.key + 1;
+                                String productName = entry.value.toString();
+                                return Text(
+                                  '$index. $productName',
+                                );
+                              }).toList(),
                             ),
                           ],
                         ),

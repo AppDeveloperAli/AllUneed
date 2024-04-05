@@ -19,58 +19,63 @@ class OrderPlacedScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
           child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LottieBuilder.asset(
-              'assets/orderPlaced.json',
-              repeat: false,
-              height: 300,
-            ),
-            Text(
-              'Order ID : $orderID',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                'Delivery Passcode : $deliveryPasscode',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LottieBuilder.asset(
+                'assets/orderPlaced.json',
+                repeat: false,
+                height: 300,
+              ),
+              Text(
+                'Order ID : $orderID',
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25,
                     color: Colors.red),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Please note your Order ID and Passcode\n which you use for getting your parcel.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Delivery Passcode : $deliveryPasscode',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.red),
+                ),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Thanks for your placement\nWe will deliver your order in few hours.',
-                textAlign: TextAlign.center,
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Please note your Order ID and Passcode which you use for getting your parcel.\n\nSome of items quantity may effect due to availability.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: MyButton(
-                // onPressed: () => openCheckout(),
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => const HomePage()),
-                    (route) => false,
-                  );
-                },
-                text: "Back to Home",
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Thanks for your placement\nWe will deliver your order in few hours.',
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: MyButton(
+                  // onPressed: () => openCheckout(),
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      CupertinoPageRoute(
+                          builder: (context) => const HomePage()),
+                      (route) => false,
+                    );
+                  },
+                  text: "Back to Home",
+                ),
+              ),
+            ],
+          ),
         ),
       )),
     );
