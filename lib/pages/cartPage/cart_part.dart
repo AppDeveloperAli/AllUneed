@@ -16,7 +16,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  int selectedPayment = 0;
+  int? selectedPayment;
 
   Widget CustomPaymentCardButton(String title, int index) {
     List<String> timeParts = title.split(' : ');
