@@ -2,7 +2,9 @@ import 'package:fiv/pages/login/login_page.dart';
 import 'package:fiv/pages/singup/component/signup_provider.dart';
 import 'package:fiv/widgets/custom_textfield_widget.dart';
 import 'package:fiv/widgets/my_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController fullName = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController location = TextEditingController();
+  TextEditingController hostelNumber = TextEditingController();
+  TextEditingController roomNo = TextEditingController();
 
   TextEditingController password = TextEditingController();
 
@@ -70,14 +74,57 @@ class _SignupPageState extends State<SignupPage> {
                           hintText: 'Email Address',
                           controller: email),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text('Select Your'),
+                        DropdownButton<String>(
+                          hint: Text('College'),
+                          value: selectedOption,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedOption = newValue!;
+                            });
+                          },
+                          items: <String>['MIT', 'NITTE', 'MVIT']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextFieldWidget(
+                              keyboardType: TextInputType.number,
+                              hintText: 'Hostel Block.',
+                              controller: hostelNumber),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: Expanded(
+                              child: CustomTextFieldWidget(
+                                  keyboardType: TextInputType.number,
+                                  hintText: 'Room No.',
+                                  controller: roomNo),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     // TextFormField(
                     //   controller: location,
                     //   decoration: const InputDecoration(hintText: "Location"),
                     // ),
-                    CustomTextFieldWidget(
-                        keyboardType: TextInputType.streetAddress,
-                        hintText: 'Location',
-                        controller: location),
+                    // CustomTextFieldWidget(
+                    //     keyboardType: TextInputType.streetAddress,
+                    //     hintText: 'Location',
+                    //     controller: location),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: TextFormField(
@@ -107,39 +154,6 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
-                    RadioListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: const Text('MIT'),
-                      value: 'MIT',
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: const Text('NITTE'),
-                      value: 'NITTE',
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title: const Text('MVIT'),
-                      value: 'MVIT',
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
                   ],
                 ),
                 const SizedBox(
@@ -149,12 +163,14 @@ class _SignupPageState extends State<SignupPage> {
                   children: [
                     signupAuthProvider.loading == false
                         ? MyButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (selectedOption != null) {
                                 signupAuthProvider.signupVaidation(
                                     emailAdress: email,
                                     fullName: fullName,
                                     password: password,
+                                    hostelNo: hostelNumber,
+                                    roomNo: roomNo,
                                     college: selectedOption!,
                                     context: context);
                               } else {

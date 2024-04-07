@@ -98,6 +98,22 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                             ),
                             Row(
                               children: [
+                                const Text('Hostel: '),
+                                Text(
+                                  order['Hostel'],
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('Room: '),
+                                Text(
+                                  order['Room'],
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
                                 const Text('Order ID: '),
                                 Text(
                                   order['orderID'],

@@ -12,6 +12,8 @@ class SignupAuthProvider with ChangeNotifier {
   void signupVaidation(
       {required TextEditingController? fullName,
       required TextEditingController? emailAdress,
+      required TextEditingController? hostelNo,
+      required TextEditingController? roomNo,
       required TextEditingController? password,
       required String college,
       required BuildContext context}) async {
@@ -26,6 +28,20 @@ class SignupAuthProvider with ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Email address is empty"),
+        ),
+      );
+      return;
+    } else if (hostelNo!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Hostel Block is empty"),
+        ),
+      );
+      return;
+    } else if (roomNo!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Room Number is empty"),
         ),
       );
       return;
@@ -64,7 +80,9 @@ class SignupAuthProvider with ChangeNotifier {
             "emailAdress": emailAdress.text,
             "password": password.text,
             "userUid": userCredential!.user?.uid,
-            "college": college
+            "college": college,
+            "roomNo": roomNo.text,
+            "hostel": hostelNo.text
           },
         ).then((value) {
           loading = false;

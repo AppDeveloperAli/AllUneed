@@ -126,6 +126,50 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return fullName;
   }
 
+  Future<String?> gettingRoom() async {
+    String? fullName;
+    String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+
+      if (snapshot.exists) {
+        fullName = snapshot['roomNo'];
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+
+    return fullName;
+  }
+
+  Future<String?> gettingHostel() async {
+    String? fullName;
+    String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+
+      if (snapshot.exists) {
+        fullName = snapshot['hostel'];
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+
+    return fullName;
+  }
+
   Map<String, dynamic>? specialData; // Variable to store special data
 
   Future<Map<String, dynamic>?> fetchSpecialData() async {
@@ -382,6 +426,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                             String? getCollege =
                                                 await getcOLLEGE();
 
+                                            String? getRoom =
+                                                await gettingRoom();
+
+                                            String? getHostel =
+                                                await gettingHostel();
+
                                             await otpCollection.doc().set({
                                               'UiD': FirebaseAuth
                                                   .instance.currentUser!.uid,
@@ -393,6 +443,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               'DateTime': formattedDate,
                                               'PickedTime': '${widget.time} PM',
                                               'College': getCollege,
+                                              'Hostel': getHostel,
+                                              'Room': getRoom,
                                             });
                                             // cartProvider.deleteCartCollection();
 
@@ -408,6 +460,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               'DateTime': formattedDate,
                                               'PickedTime': '${widget.time} PM',
                                               'College': getCollege,
+                                              'Hostel': getHostel,
+                                              'Room': getRoom,
                                             });
                                             cartProvider.deleteCartCollection();
                                             CustomSnackBar(

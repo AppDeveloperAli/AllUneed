@@ -33,6 +33,10 @@ class SecondPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double remainingDouble = double.parse(reamaining);
+    int remainingInt = remainingDouble.toInt();
+    String result = "Stock: $remainingInt";
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,11 +73,18 @@ class SecondPart extends StatelessWidget {
                         color: Colors.red),
                   ),
                   Text(
-                    "Piece $reamaining",
+                    result,
                   ),
                 ],
               ),
             ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            'Product Description',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Padding(
