@@ -44,6 +44,9 @@ class _SingleProductState extends State<SingleProduct> {
   Widget build(BuildContext context) {
     FavoriteProvider favoriteProvider = Provider.of<FavoriteProvider>(context);
 
+    double hieght = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     FirebaseFirestore.instance
         .collection("favorite")
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -71,11 +74,11 @@ class _SingleProductState extends State<SingleProduct> {
           Container(
             margin: const EdgeInsets.all(12.0),
             alignment: Alignment.topRight,
-            height: 150,
-            width: 150,
+            height: hieght / 7,
+            width: width / 2.5,
             decoration: BoxDecoration(
               image: DecorationImage(
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 image: CachedNetworkImageProvider(
                   widget.productImage,
                 ),
@@ -124,17 +127,16 @@ class _SingleProductState extends State<SingleProduct> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 120,
+                    width: width / 4.5,
                     child: Text(
                       widget.productName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.normal, fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 1,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,

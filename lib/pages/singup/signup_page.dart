@@ -74,45 +74,43 @@ class _SignupPageState extends State<SignupPage> {
                           hintText: 'Email Address',
                           controller: email),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text('Select Your'),
-                        DropdownButton<String>(
-                          hint: Text('College'),
-                          value: selectedOption,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedOption = newValue!;
-                            });
-                          },
-                          items: <String>['MIT', 'NITTE', 'MVIT']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ],
+                    // Text('Select Your'),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: DropdownButton<String>(
+                        hint: Text('Please Select Your College'),
+                        value: selectedOption,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedOption = newValue!;
+                          });
+                        },
+                        items: <String>['MIT', 'NITTE', 'MVIT']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                     Row(
                       children: [
                         Expanded(
+                          // flex: 1,
                           child: CustomTextFieldWidget(
                               keyboardType: TextInputType.number,
                               hintText: 'Hostel Block.',
                               controller: hostelNumber),
                         ),
                         Expanded(
+                          // flex: 1,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5),
-                            child: Expanded(
-                              child: CustomTextFieldWidget(
-                                  keyboardType: TextInputType.number,
-                                  hintText: 'Room No.',
-                                  controller: roomNo),
-                            ),
+                            child: CustomTextFieldWidget(
+                                keyboardType: TextInputType.number,
+                                hintText: 'Room No.',
+                                controller: roomNo),
                           ),
                         ),
                       ],
@@ -165,14 +163,32 @@ class _SignupPageState extends State<SignupPage> {
                         ? MyButton(
                             onPressed: () async {
                               if (selectedOption != null) {
-                                signupAuthProvider.signupVaidation(
-                                    emailAdress: email,
-                                    fullName: fullName,
-                                    password: password,
-                                    hostelNo: hostelNumber,
-                                    roomNo: roomNo,
-                                    college: selectedOption!,
-                                    context: context);
+                                if (email.text.isEmpty) {
+                                  // Show error message for empty email
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Email cannot be empty."),
+                                    ),
+                                  );
+                                } else if (!email.text.contains('@') ||
+                                    !email.text.contains('.')) {
+                                  // Show error message for email missing '@' or '.'
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          "Please enter a valid email address."),
+                                    ),
+                                  );
+                                } else {
+                                  signupAuthProvider.signupVaidation(
+                                      emailAdress: email,
+                                      fullName: fullName,
+                                      password: password,
+                                      hostelNo: hostelNumber,
+                                      roomNo: roomNo,
+                                      college: selectedOption!,
+                                      context: context);
+                                }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

@@ -17,7 +17,6 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   int? selectedPayment;
-
   Widget CustomPaymentCardButton(String title, int index) {
     List<String> timeParts = title.split(' : ');
     int hour = int.parse(timeParts[0]);
@@ -27,27 +26,19 @@ class _CartPageState extends State<CartPage> {
 
     TimeOfDay currentTime = TimeOfDay.now();
 
-    DateTime currentDateTime = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      currentTime.hour,
-      currentTime.minute,
-    );
+    // Adjusting the logic to handle time crossing 10:30 PM
+    bool isAM = storedTime.hour < 12;
+    bool isPM = storedTime.hour >= 12;
+    bool isBefore1030PM = storedTime.hour < 22 ||
+        (storedTime.hour == 22 && storedTime.minute <= 30);
+    bool isBefore5Hours = currentTime.hour >= storedTime.hour &&
+        currentTime.hour - storedTime.hour < 5;
 
-    DateTime storedDateTime = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      storedTime.hour,
-      storedTime.minute,
-    );
-
-    bool isPastTime = storedDateTime.isBefore(currentDateTime);
+    bool isPastTime = isPM && isBefore1030PM && isBefore5Hours;
 
     return ElevatedButton(
       onPressed: () {
-        if (!isPastTime) {
+        if (!isPastTime || (isAM && !isBefore5Hours)) {
           setState(() {
             selectedPayment = index;
           });
@@ -146,6 +137,7 @@ class _CartPageState extends State<CartPage> {
               },
             ),
       appBar: AppBar(
+        title: Center(child: Text('Products in Cart')),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

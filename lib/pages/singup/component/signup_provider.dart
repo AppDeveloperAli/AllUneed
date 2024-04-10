@@ -87,9 +87,12 @@ class SignupAuthProvider with ChangeNotifier {
         ).then((value) {
           loading = false;
           notifyListeners();
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ));
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+            (route) => false,
+          );
         });
       } on FirebaseAuthException catch (e) {
         loading = false;
@@ -97,13 +100,25 @@ class SignupAuthProvider with ChangeNotifier {
         if (e.code == "weak-password") {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("weak-password"),
+              content: Text("The password provided is too weak."),
             ),
           );
         } else if (e.code == 'email-already-in-use') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("email-already-in-use"),
+              content: Text("The account already exists for that email."),
+            ),
+          );
+        } else if (e.code == 'invalid-email') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("The email address is badly formatted."),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("An undefined error occurred."),
             ),
           );
         }

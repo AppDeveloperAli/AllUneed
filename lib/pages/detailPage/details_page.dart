@@ -118,7 +118,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,6 +136,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
+                          elevation: 5,
                           semanticContainer: true,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           child: widget.imageList.isEmpty
@@ -152,7 +153,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                         (imageUrl) => CachedNetworkImage(
                                           key: UniqueKey(),
                                           imageUrl: imageUrl,
-                                          fit: BoxFit.contain,
+                                          fit: BoxFit.fitHeight,
                                           placeholder: (context, url) => Center(
                                               child: Container(
                                             width: double.infinity,
@@ -171,11 +172,11 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                       ),
                       Positioned(
-                        top: 10,
-                        left: 10,
+                        top: 15,
+                        left: 15,
                         child: Container(
-                          width: 60,
-                          height: 60,
+                          width: 50,
+                          height: 50,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.white,
@@ -195,8 +196,8 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                       ),
                       Positioned(
-                        bottom: 5,
-                        right: 5,
+                        bottom: 10,
+                        right: 10,
                         child: widget.imageList.isEmpty
                             ? Container()
                             : Card(
