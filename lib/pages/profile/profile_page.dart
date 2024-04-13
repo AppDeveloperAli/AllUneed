@@ -20,8 +20,49 @@ class _ProfilePageState extends State<ProfilePage> {
 
   TextEditingController fullName =
       TextEditingController(text: userModel.fullName);
+  TextEditingController college =
+      TextEditingController(text: userModel.fullName);
+  TextEditingController hostel =
+      TextEditingController(text: userModel.fullName);
+  TextEditingController room = TextEditingController(text: userModel.fullName);
+  TextEditingController phone = TextEditingController(text: userModel.fullName);
   TextEditingController emailAddress =
       TextEditingController(text: userModel.emailAddress);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> userData =
+            documentSnapshot.data() as Map<String, dynamic>;
+        setState(() {
+          fullName.text = userData['fullName'];
+          college.text = userData['college'];
+          room.text = userData['roomNo'];
+          hostel.text = userData['hostel'];
+          phone.text = userData['phoneNumber'];
+          emailAddress.text = userData['emailAdress'];
+          // You can populate other fields similarly
+        });
+      } else {
+        print('Document does not exist on the database');
+      }
+    }).catchError((error) {
+      print('Failed to fetch user data: $error');
+    });
+  }
 
   Widget textFromField({required String hintText}) {
     return Container(
@@ -48,6 +89,34 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
       return;
+    } else if (college!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("fullName is empty"),
+        ),
+      );
+      return;
+    } else if (hostel!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("fullName is empty"),
+        ),
+      );
+      return;
+    } else if (room!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("fullName is empty"),
+        ),
+      );
+      return;
+    } else if (phone!.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("fullName is empty"),
+        ),
+      );
+      return;
     } else if (emailAdress!.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -68,76 +137,130 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget nonEditTextField() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage("images/non_profile.jpg"),
-              radius: 50,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage("images/non_profile.jpg"),
+                radius: 50,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          // textFromField(hintText: userModel.fullName),
+          CustomTextFieldWidget(hintText: 'Full Name', controller: fullName),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child:
+                CustomTextFieldWidget(hintText: 'College', controller: college),
+          ),
+          CustomTextFieldWidget(
+            hintText: 'Room No',
+            controller: room,
+            keyboardType: TextInputType.number,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: CustomTextFieldWidget(
+              hintText: 'Hostel',
+              controller: hostel,
+              keyboardType: TextInputType.number,
             ),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        // textFromField(hintText: userModel.fullName),
-        CustomTextFieldWidget(
-          hintText: userModel.fullName,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        CustomTextFieldWidget(hintText: userModel.emailAddress),
-        // textFromField(hintText: userModel.emailAddress),
-      ],
+          ),
+          CustomTextFieldWidget(
+            hintText: 'Phone Number',
+            controller: phone,
+            keyboardType: TextInputType.number,
+          ),
+
+          // TextFormField(
+          //   controller: fullName,
+          //   decoration: const InputDecoration(hintText: "fullName"),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: CustomTextFieldWidget(
+                hintText: 'Email Address', controller: emailAddress),
+          ),
+          // textFromField(hintText: userModel.emailAddress),
+        ],
+      ),
     );
   }
 
   Widget editTextField() {
-    return Column(
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage("images/non_profile.jpg"),
-              radius: 50,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage("images/non_profile.jpg"),
+                radius: 50,
+              ),
+            ],
+          ),
+          CustomTextFieldWidget(hintText: 'Full Name', controller: fullName),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child:
+                CustomTextFieldWidget(hintText: 'College', controller: college),
+          ),
+          CustomTextFieldWidget(
+            hintText: 'Room No',
+            controller: room,
+            keyboardType: TextInputType.number,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: CustomTextFieldWidget(
+              hintText: 'Hostel',
+              controller: hostel,
+              keyboardType: TextInputType.number,
             ),
-          ],
-        ),
-        CustomTextFieldWidget(hintText: 'Full Name', controller: fullName),
+          ),
+          CustomTextFieldWidget(
+            hintText: 'Phone Number',
+            controller: phone,
+            keyboardType: TextInputType.number,
+          ),
 
-        // TextFormField(
-        //   controller: fullName,
-        //   decoration: const InputDecoration(hintText: "fullName"),
-        // ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: CustomTextFieldWidget(
-              hintText: 'Email Address', controller: emailAddress),
-        ),
-        // TextFormField(
-        //   controller: emailAddress,
-        //   decoration: const InputDecoration(
-        //     hintText: "emailAddres",
-        //   ),
-        // ),
-        const SizedBox(
-          height: 10,
-        ),
-        MyButton(
-          onPressed: () {
-            profileVaidation(
-              context: context,
-              emailAdress: emailAddress,
-              fullName: fullName,
-            );
-          },
-          text: "Update",
-        )
-      ],
+          // TextFormField(
+          //   controller: fullName,
+          //   decoration: const InputDecoration(hintText: "fullName"),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: CustomTextFieldWidget(
+                hintText: 'Email Address', controller: emailAddress),
+          ),
+          // TextFormField(
+          //   controller: emailAddress,
+          //   decoration: const InputDecoration(
+          //     hintText: "emailAddres",
+          //   ),
+          // ),
+          const SizedBox(
+            height: 10,
+          ),
+          MyButton(
+            onPressed: () {
+              profileVaidation(
+                context: context,
+                emailAdress: emailAddress,
+                fullName: fullName,
+              );
+            },
+            text: "Update",
+          )
+        ],
+      ),
     );
   }
 
@@ -149,6 +272,12 @@ class _ProfilePageState extends State<ProfilePage> {
       {
         "fullName": fullName.text,
         "emailAdress": emailAddress.text,
+        "college": college.text,
+        "hostel": hostel.text,
+        "password": "sdfsdf13213425",
+        "phoneNumber": phone.text,
+        "roomNo": room.text,
+        "userUid": "yOF5cNqkZJcWgTcrHaiUxm4dmE33",
       },
     ).then(
       (value) => RoutingPage.goTonext(

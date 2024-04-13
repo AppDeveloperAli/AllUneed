@@ -21,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController location = TextEditingController();
   TextEditingController hostelNumber = TextEditingController();
   TextEditingController roomNo = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
 
   TextEditingController password = TextEditingController();
 
@@ -115,6 +116,13 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ],
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: CustomTextFieldWidget(
+                          keyboardType: TextInputType.number,
+                          hintText: 'Phone Number',
+                          controller: phoneNumber),
+                    ),
                     // TextFormField(
                     //   controller: location,
                     //   decoration: const InputDecoration(hintText: "Location"),
@@ -186,6 +194,7 @@ class _SignupPageState extends State<SignupPage> {
                                       password: password,
                                       hostelNo: hostelNumber,
                                       roomNo: roomNo,
+                                      phoneNumber: phoneNumber,
                                       college: selectedOption!,
                                       context: context);
                                 }

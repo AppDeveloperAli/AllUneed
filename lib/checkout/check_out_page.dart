@@ -226,7 +226,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               color: Colors.green,
             ),
             Text(
-              ' You savied from this order : ₹ $savedPrice',
+              ' You saved from this order : ₹ $savedPrice',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.green,
@@ -324,44 +324,91 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         child: Column(
                           children: [
                             ListTile(
-                              leading: const Text("Picked Time"),
-                              trailing: Text('${widget.time.toString()} PM'),
+                              leading: const Text(
+                                "Picked Time",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Text(
+                                '${widget.time.toString()} PM',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                             ),
                             ListTile(
-                              leading: const Text("Sub Total"),
-                              trailing:
-                                  Text("₹ ${subTotal.toStringAsFixed(2)}"),
+                              leading: const Text(
+                                "Sub Total",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Text(
+                                "₹ ${subTotal.toStringAsFixed(2)}",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                             ),
                             ListTile(
-                              leading: const Text("Discount"),
+                              leading: const Text(
+                                "Discount",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               trailing: specialData != null &&
                                       specialData!.containsKey('discount')
                                   ? Text(
-                                      '${specialData!['discount'].toString()} %')
+                                      '${specialData!['discount'].toString()} %',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    )
                                   : const Text('Loading...'),
                             ),
                             ListTile(
-                              leading: const Text("Shipping"),
+                              leading: const Text(
+                                "Shipping",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               trailing: specialData != null &&
                                       specialData!.containsKey('shiping')
                                   ? Text(
-                                      '₹ ${specialData!['shiping'].toString()}')
+                                      '₹ ${specialData!['shiping'].toString()}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    )
                                   : const Text('Loading...'),
                             ),
                             ListTile(
-                              leading: const Text("Packing Charges"),
+                              leading: const Text(
+                                "Packing Charges",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               trailing: specialData != null &&
                                       specialData!.containsKey('packingCharges')
                                   ? Text(
-                                      '₹ ${specialData!['packingCharges'].toString()}')
+                                      '₹ ${specialData!['packingCharges'].toString()}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    )
                                   : const Text('Loading...'),
                             ),
                             ListTile(
-                              leading: const Text("Delivery Tax"),
+                              leading: const Text(
+                                "Delivery Tax",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               trailing: specialData != null &&
                                       specialData!.containsKey('deliveryTax')
                                   ? Text(
-                                      '${specialData!['deliveryTax'].toString()} %')
+                                      '${specialData!['deliveryTax'].toString()} %',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    )
                                   : const Text('Loading...'),
                             ),
                             const Divider(
