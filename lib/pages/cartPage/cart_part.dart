@@ -137,7 +137,7 @@ class _CartPageState extends State<CartPage> {
               },
             ),
       appBar: AppBar(
-        title: Center(child: Text('Products in Cart')),
+        title: const Center(child: Text('Products in Cart')),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

@@ -97,11 +97,11 @@ class _SingleCartItemState extends State<SingleCartItem> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(15.0),
-      height: 150,
+      height: 190,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -116,7 +116,7 @@ class _SingleCartItemState extends State<SingleCartItem> {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
                   ),
