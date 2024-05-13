@@ -391,7 +391,7 @@ class Categories extends StatelessWidget {
               height: double.infinity,
               child: CachedNetworkImage(
                 imageUrl: image,
-                fit: BoxFit.contain,
+                fit: BoxFit.fitWidth,
                 placeholder: (context, url) =>
                     const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -418,9 +418,9 @@ class Categories extends StatelessWidget {
               child: Text(
                 categoryName,
                 style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
               ),
             ),
           ],

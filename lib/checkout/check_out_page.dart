@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 // import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../appColors/app_colors.dart';
@@ -28,57 +29,182 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
-  // late Razorpay _razorpay;
+  late Razorpay _razorpay;
   late double totalPrice;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // _razorpay = Razorpay();
-  //   // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-  //   // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  //   // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  // }
+  String razorPayKey = "rzp_live_cOwyKswiTZNmwj";
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    totalPrice = 0.0; // Initialize totalPrice
+    fetchSpecialData().then((data) {
+      setState(() {
+        specialData = data;
+        if (specialData != null) {
+          totalPrice =
+              price(); // Calculate totalPrice only if special data is available
+        }
+      });
+    });
+  }
 
   @override
   void dispose() {
     super.dispose();
-    // _razorpay.clear();
+    _razorpay.clear();
   }
 
-  void openCheckout() async {
+  void openCheckout(String amount) async {
     var options = {
-      'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': num.parse(totalPrice.toString()) * 100,
-      'name': 'Yaqoob Bugti',
-      'description': 'Payment for some randonm product',
-      'prefill': {
-        'contact': '8888888888',
-        'email': 'yaqoobkafeel580@gmail.com',
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
+      'key': razorPayKey,
+      'amount': (double.parse(amount) * 100).toString(),
+      // 'name': username,
+      // 'description': ticketType,
+      'timeout': 300,
+      'retry': {'enabled': true, 'max_count': 1},
+      'send_sms_hash': true,
+      // 'prefill': {'contact': mobile, 'email': email},
     };
 
     try {
-      // _razorpay.open(options);
+      _razorpay.open(options);
     } catch (e) {
-      print(e.toString());
+      debugPrint('Error: $e');
     }
   }
 
-  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
-  //   print("Payment Susccess");
+  // void openCheckout() async {
+  //   var options = {
+  //     'key': 'rzp_test_1DP5mmOlF5G5ag',
+  //     'amount': num.parse(totalPrice.toString()) * 100,
+  //     'name': 'Yaqoob Bugti',
+  //     'description': 'Payment for some randonm product',
+  //     'prefill': {
+  //       'contact': '8888888888',
+  //       'email': 'yaqoobkafeel580@gmail.com',
+  //     },
+  //     'external': {
+  //       'wallets': ['paytm']
+  //     }
+  //   };
+  //
+  //   try {
+  //     // _razorpay.open(options);
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
   // }
 
-  // void _handlePaymentError(PaymentFailureResponse response) {
-  //   print("Payment error");
-  // }
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    print('Success Response: $response');
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    cartProvider.getCartData();
 
-  // void _handleExternalWallet(ExternalWalletResponse response) {
-  //   print("EXTERNAL_WALLET ");
-  // }
+    setState(() {
+      isLoading = true;
+    });
+    String orderID = generateRandomNumber().toString();
+    String deliveryPasscode = generateRandomNumber().toString();
+    CollectionReference ordersCollection =
+        FirebaseFirestore.instance.collection('orders');
+    CollectionReference otpCollection =
+        FirebaseFirestore.instance.collection('otp');
+
+    List<String> getProductNames(List<CartModel> cartList) {
+      return cartList.map((item) => item.productName).toList();
+    }
+
+    List<CartModel> cartList = cartProvider.getCartList;
+    List<String> productNames = getProductNames(cartList);
+
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('kk:mm:ss - EEE dd MMMM').format(now);
+
+    try {
+      String? fullName = await getFullName();
+
+      String? getCollege = await getcOLLEGE();
+
+      String? getRoom = await gettingRoom();
+
+      String? getHostel = await gettingHostel();
+
+      await otpCollection.doc().set({
+        'UiD': FirebaseAuth.instance.currentUser!.uid,
+        'orderID': orderID,
+        'pinCode': deliveryPasscode,
+        'isDelivered': false,
+        'productNames': productNames,
+        'customerName': fullName,
+        'DateTime': formattedDate,
+        'PickedTime': '${widget.time} PM',
+        'College': getCollege,
+        'Hostel': getHostel,
+        'Room': getRoom,
+      });
+      // cartProvider.deleteCartCollection();
+
+      await ordersCollection.doc().set({
+        'orderID': orderID,
+        'deliveryPasscode': deliveryPasscode,
+        'productNames': productNames,
+        'customerName': fullName,
+        'ID': FirebaseAuth.instance.currentUser!.uid,
+        'isDelivered': false,
+        'DateTime': formattedDate,
+        'PickedTime': '${widget.time} PM',
+        'College': getCollege,
+        'Hostel': getHostel,
+        'Room': getRoom,
+      });
+      cartProvider.deleteCartCollection();
+      CustomSnackBar(context, const Text('Order Placed Successfully'));
+      Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(
+          builder: (context) => OrderPlacedScreen(
+            deliveryPasscode: deliveryPasscode,
+            orderID: orderID,
+          ),
+        ),
+        (route) => false,
+      );
+    } catch (e) {
+      CustomSnackBar(context, Text('Error uploading order: $e'));
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Payment Success"),
+      ),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    print(
+        'Error Response: ${"ERROR: " + response.code.toString() + " - " + response.message!}');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Payment Failed! Please try again later."),
+      ),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response.walletName!),
+      ),
+    );
+  }
 
   bool isLoading = false;
 
@@ -193,21 +319,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   String savedPrice = '';
-
-  @override
-  void initState() {
-    super.initState();
-    totalPrice = 0.0; // Initialize totalPrice
-    fetchSpecialData().then((data) {
-      setState(() {
-        specialData = data;
-        if (specialData != null) {
-          totalPrice =
-              price(); // Calculate totalPrice only if special data is available
-        }
-      });
-    });
-  }
 
   Widget yellowCard() {
     return Padding(
@@ -433,111 +544,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 : isLoading
                                     ? const CircularProgressIndicator()
                                     : MyButton(
-                                        // onPressed: () => openCheckout(),
                                         onPressed: () async {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          String orderID =
-                                              generateRandomNumber().toString();
-                                          String deliveryPasscode =
-                                              generateRandomNumber().toString();
-                                          CollectionReference ordersCollection =
-                                              FirebaseFirestore.instance
-                                                  .collection('orders');
-                                          CollectionReference otpCollection =
-                                              FirebaseFirestore.instance
-                                                  .collection('otp');
-
-                                          List<String> getProductNames(
-                                              List<CartModel> cartList) {
-                                            return cartList
-                                                .map((item) => item.productName)
-                                                .toList();
-                                          }
-
-                                          List<CartModel> cartList =
-                                              cartProvider.getCartList;
-                                          List<String> productNames =
-                                              getProductNames(cartList);
-
-                                          DateTime now = DateTime.now();
-                                          String formattedDate = DateFormat(
-                                                  'kk:mm:ss - EEE dd MMMM')
-                                              .format(now);
-
-                                          try {
-                                            String? fullName =
-                                                await getFullName();
-
-                                            String? getCollege =
-                                                await getcOLLEGE();
-
-                                            String? getRoom =
-                                                await gettingRoom();
-
-                                            String? getHostel =
-                                                await gettingHostel();
-
-                                            await otpCollection.doc().set({
-                                              'UiD': FirebaseAuth
-                                                  .instance.currentUser!.uid,
-                                              'orderID': orderID,
-                                              'pinCode': deliveryPasscode,
-                                              'isDelivered': false,
-                                              'productNames': productNames,
-                                              'customerName': fullName,
-                                              'DateTime': formattedDate,
-                                              'PickedTime': '${widget.time} PM',
-                                              'College': getCollege,
-                                              'Hostel': getHostel,
-                                              'Room': getRoom,
-                                            });
-                                            // cartProvider.deleteCartCollection();
-
-                                            await ordersCollection.doc().set({
-                                              'orderID': orderID,
-                                              'deliveryPasscode':
-                                                  deliveryPasscode,
-                                              'productNames': productNames,
-                                              'customerName': fullName,
-                                              'ID': FirebaseAuth
-                                                  .instance.currentUser!.uid,
-                                              'isDelivered': false,
-                                              'DateTime': formattedDate,
-                                              'PickedTime': '${widget.time} PM',
-                                              'College': getCollege,
-                                              'Hostel': getHostel,
-                                              'Room': getRoom,
-                                            });
-                                            cartProvider.deleteCartCollection();
-                                            CustomSnackBar(
-                                                context,
-                                                const Text(
-                                                    'Order Placed Successfully'));
-                                            Navigator.of(context)
-                                                .pushAndRemoveUntil(
-                                              CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    OrderPlacedScreen(
-                                                  deliveryPasscode:
-                                                      deliveryPasscode,
-                                                  orderID: orderID,
-                                                ),
-                                              ),
-                                              (route) => false,
-                                            );
-                                          } catch (e) {
-                                            CustomSnackBar(
-                                                context,
-                                                Text(
-                                                    'Error uploading order: $e'));
-                                          }
-
-                                          setState(() {
-                                            isLoading = false;
-                                          });
+                                          print(
+                                              "Total Price===> ${amount.toString()}");
+                                          openCheckout(amount.toString());
                                         },
+
+                                        // onPressed: () async {
                                         text: "Buy",
                                       ),
                             // const ListTile(
@@ -568,6 +581,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
+  double amount = 0.0;
+
   double price() {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     cartProvider.getCartData();
@@ -593,6 +608,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
       // Add tax amount to the total value
       value += taxAmount;
 
+      amount = value + shipping + packingCharges;
       return value + shipping + packingCharges;
     } else {
       return 0.0; // Return a default value if specialData is null
